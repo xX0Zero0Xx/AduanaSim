@@ -44,4 +44,11 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    public function showInfo(Request $request)
+    {
+        return view('profile.partials.show-information-from', [
+            'user' => $request->user(),
+        ]);
+    }
 }

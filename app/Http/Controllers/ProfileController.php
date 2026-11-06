@@ -57,4 +57,11 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function showInfo(Request $request): View
+    {
+        return view('profile.partials.show-information-from', [
+            'user' => $request->user(),
+        ]);
+    }
 }
