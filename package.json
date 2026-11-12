@@ -3,6 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "zi": "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache",
         "Prender": "concurrently \"npm run dev\" \"php artisan serve\"",
         "Limpiar": "php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear",
         "build": "vite build",
