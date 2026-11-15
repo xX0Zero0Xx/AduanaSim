@@ -66,7 +66,7 @@
         <section class="aduana-welcome aduana-welcome--role">
             <div class="aduana-welcome__copy">
                 <span class="aduana-eyebrow">
-                    <span></span> ADUANASIM · ENTORNO ACADÉMICO
+                    <span></span> Entorno academico
                 </span>
 
                 <h1><?php echo e($panel['nombre']); ?></h1>
@@ -78,9 +78,9 @@
                 </div>
             </div>
 
-            <div class="aduana-welcome__mark" aria-hidden="true">
+            <!--- <div class="aduana-welcome__mark" aria-hidden="true">
                 <img src="<?php echo e(asset('images/aduanasim-logo.png')); ?>" alt="">
-            </div>
+            </div> -->
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -88,7 +88,7 @@
             <div class="aduana-section-heading">
                 <div>
                     <span class="aduana-eyebrow aduana-eyebrow--muted">
-                        PANEL DE CONTROL
+                        Panel de control
                     </span>
                     <h2>Espacio de trabajo</h2>
                 </div>

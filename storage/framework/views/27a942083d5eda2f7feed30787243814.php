@@ -3,7 +3,7 @@
         <a href="<?php echo e(route('dashboard')); ?>" class="aduana-brand" aria-label="AduanaSim, ir al panel principal">
             <img src="<?php echo e(asset('images/aduanasim-logo.png')); ?>" alt="Logotipo de AduanaSim" class="aduana-brand__logo">
             <span class="aduana-brand__copy">
-                <span class="aduana-brand__name">ADUANASIM</span>
+                <span class="aduana-brand__name">AduanaSim</span>
                 <span class="aduana-brand__tagline">Simulador de despacho aduanero</span>
             </span>
         </a>
