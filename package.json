@@ -3,10 +3,13 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "zi": "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=$PORT",
         "Prender": "concurrently \"npm run dev\" \"php artisan serve\"",
         "Limpiar": "php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear",
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "web": "npm install && npm run build && npm run dev",
+        "start": "node server.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

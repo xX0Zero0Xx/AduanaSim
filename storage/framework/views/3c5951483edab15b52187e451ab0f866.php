@@ -1,5 +1,5 @@
 <section class="aduana-role-home">
-    <div class="aduana-home__intro"><div><span class="aduana-eyebrow aduana-eyebrow--muted">VISTA GENERAL · CAPTURISTA</span><h3>Tu espacio de prácticas</h3><p>Elabora documentos, guarda avances como borrador y envía tus ejercicios al agente para su validación académica.</p></div><div class="aduana-home__stamp"><span>AS</span><small>CAPTURA</small></div></div>
+    <div class="aduana-home__intro"><div><span class="aduana-eyebrow aduana-eyebrow--muted">VISTA GENERAL · CAPTURISTA</span><h3>Tu espacio de prácticas</h3><p>Elabora documentos, guarda avances como borrador y envía tus ejercicios al agente para su validación académica.</p></div></div>
     <div class="aduana-stat-grid aduana-stat-grid--three">
         <article class="aduana-stat-card"><span class="aduana-stat-card__label">Mis borradores</span><strong>—</strong><small>Documentos en elaboración</small></article>
         <article class="aduana-stat-card"><span class="aduana-stat-card__label">En validación</span><strong>—</strong><small>En espera de revisión</small></article>
