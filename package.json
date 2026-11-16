@@ -8,7 +8,7 @@
         "Limpiar": "php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear",
         "build": "vite build",
         "dev": "vite",
-        "web": "npm run build && npm run dev"
+        "web": "npm install && npm run build && npm run dev"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
