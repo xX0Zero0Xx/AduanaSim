@@ -7,7 +7,8 @@
         "Prender": "concurrently \"npm run dev\" \"php artisan serve\"",
         "Limpiar": "php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear",
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "web": "npm run build && npm run dev"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
