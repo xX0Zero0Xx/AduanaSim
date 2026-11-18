@@ -1,5 +1,11 @@
 <?php
 
+/*
+linea 152 cambiar form,ato del correo
+linea 56 cambiar contraseña por defecto
+linea 43 contraseña segura o algo asi xd no me acuerdo
+*/
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
