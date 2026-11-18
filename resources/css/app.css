@@ -482,6 +482,50 @@ body {
 .aduana-text-action:hover span {
     transform: translateX(4px);
 }
+.aduana-user-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+    min-width: 290px;
+}
+.aduana-user-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 7px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--aduana-navy);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+.aduana-user-action:hover {
+    border-color: var(--aduana-teal);
+    background: #edf5f5;
+}
+.aduana-user-action--suspend {
+    border-color: #b45309;
+    color: #92400e;
+}
+.aduana-user-action--suspend:hover {
+    border-color: #b45309;
+    background: #fffbeb;
+}
+.aduana-user-action--delete {
+    border-color: #dc2626;
+    color: #b91c1c;
+}
+.aduana-user-action--delete:hover {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
 .aduana-notice {
     display: flex;
     align-items: flex-start;

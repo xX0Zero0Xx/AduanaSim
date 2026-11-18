@@ -124,7 +124,9 @@
                     aria-labelledby="tab-inicio"
                     tabindex="0"
                 >
-                    @include('dashboard.partials.roles.' . $rol . '.inicio')
+                    @include('dashboard.partials.roles.' . $rol . '.inicio', [
+                        'registeredUserCount' => $registeredUserCount,
+                    ])
                 </div>
 
                 {{-- ADMIN --}}
@@ -162,12 +164,21 @@
                             aria-labelledby="tab-{{ $key }}"
                             tabindex="0"
                         >
-                            @include('dashboard.partials.estado-vacio', [
-                                'titulo' => $data[0],
-                                'descripcion' => $data[1],
-                                'icono' => $data[2],
-                                'mensaje' => 'Todavía no hay registros para mostrar.'
-                            ])
+                            @if ($key === 'usuarios')
+                                @include('dashboard.partials.roles.admin.usuarios', [
+                                    'titulo' => $data[0],
+                                    'descripcion' => $data[1],
+                                    'icono' => $data[2],
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
+                                ])
+                            @else
+                                @include('dashboard.partials.estado-vacio', [
+                                    'titulo' => $data[0],
+                                    'descripcion' => $data[1],
+                                    'icono' => $data[2],
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
+                                ])
+                            @endif
                         </div>
 
                     @endforeach

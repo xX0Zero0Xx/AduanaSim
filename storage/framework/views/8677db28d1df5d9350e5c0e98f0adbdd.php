@@ -49,9 +49,6 @@
     ];
 
     $panel = $configuracion[$rol];
-    $tabSolicitada = request('tab', 'inicio');
-    $tabsValidas = array_column($panel['tabs'], 'id');
-    $tabInicial = in_array($tabSolicitada, $tabsValidas, true) ? $tabSolicitada : 'inicio';
 ?>
 
 <?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
@@ -64,7 +61,7 @@
 <?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <div class="aduana-dashboard" x-data="{ tab: <?php echo \Illuminate\Support\Js::from($tabInicial)->toHtml() ?> }">
+    <div class="aduana-dashboard" x-data="{ tab: 'inicio' }">
 
         <section class="aduana-welcome aduana-welcome--role">
             <div class="aduana-welcome__copy">
@@ -137,7 +134,9 @@
                     aria-labelledby="tab-inicio"
                     tabindex="0"
                 >
-                    <?php echo $__env->make('dashboard.partials.roles.' . $rol . '.inicio', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    <?php echo $__env->make('dashboard.partials.roles.' . $rol . '.inicio', [
+                        'registeredUserCount' => $registeredUserCount,
+                    ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 </div>
 
                 
@@ -176,13 +175,18 @@
                             tabindex="0"
                         >
                             <?php if($key === 'usuarios'): ?>
-                                <?php echo $__env->make('dashboard.partials.roles.admin.usuarios', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                                <?php echo $__env->make('dashboard.partials.roles.admin.usuarios', [
+                                    'titulo' => $data[0],
+                                    'descripcion' => $data[1],
+                                    'icono' => $data[2],
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
+                                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                             <?php else: ?>
                                 <?php echo $__env->make('dashboard.partials.estado-vacio', [
                                     'titulo' => $data[0],
                                     'descripcion' => $data[1],
                                     'icono' => $data[2],
-                                    'mensaje' => 'Esta sección está pendiente de implementación funcional.'
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
                                 ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                             <?php endif; ?>
                         </div>

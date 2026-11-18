@@ -28,7 +28,25 @@ class UserManagementTest extends TestCase
             ->assertOk()
             ->assertSee('Gestión de usuarios')
             ->assertSee('Crear usuario')
-            ->assertSee('Gestión completa');
+            ->assertDontSee('Gestión completa')
+            ->assertSee('x-if="!u.isSelf"', false)
+            ->assertSee('Sin acciones')
+            ->assertSee('Editar')
+            ->assertSee('Suspender')
+            ->assertSee('Eliminar')
+            ->assertSee('¿Deseas eliminar esta cuenta?');
+    }
+
+    public function test_admin_summary_shows_registered_user_count(): void
+    {
+        $admin = $this->admin();
+        User::factory()->create(['rol' => 'capturista']);
+
+        $this->actingAs($admin)->get('/dashboard')
+            ->assertOk()
+            ->assertSee('Usuarios registrados')
+            ->assertSee('<strong>2</strong>', false)
+            ->assertSee('Cuenta(s) en el sistema');
     }
 
     public function test_admin_can_create_user_with_individual_password(): void
@@ -45,15 +63,54 @@ class UserManagementTest extends TestCase
     }
 
 
-    public function test_admin_can_edit_their_own_profile_without_losing_admin_role(): void
+    public function test_admin_cannot_edit_their_own_account(): void
     {
         $admin = $this->admin();
+        $originalName = $admin->name;
+
         $this->actingAs($admin)->put(route('admin.usuarios.update', $admin), [
             'name' => 'Admin Actualizado', 'email' => 'admin.updated@example.com', 'rol' => 'capturista',
-        ])->assertRedirect(route('dashboard', ['tab' => 'usuarios']));
+        ])->assertRedirect(route('dashboard', ['tab' => 'usuarios']))
+            ->assertSessionHas('error', 'No puedes editar tu propia cuenta desde esta sección.');
         $admin->refresh();
-        $this->assertSame('Admin Actualizado', $admin->name);
+        $this->assertSame($originalName, $admin->name);
         $this->assertSame('admin', $admin->rol);
+    }
+
+    public function test_admin_can_suspend_another_user(): void
+    {
+        $admin = $this->admin();
+        $user = User::factory()->create(['activo' => true]);
+
+        $this->actingAs($admin)->patch(route('admin.usuarios.suspend', $user))
+            ->assertRedirect(route('dashboard', ['tab' => 'usuarios']))
+            ->assertSessionHas('status');
+
+        $this->assertFalse($user->fresh()->activo);
+    }
+
+    public function test_admin_can_reactivate_a_suspended_user(): void
+    {
+        $admin = $this->admin();
+        $user = User::factory()->create(['activo' => false]);
+
+        $this->actingAs($admin)->patch(route('admin.usuarios.activate', $user))
+            ->assertRedirect(route('dashboard', ['tab' => 'usuarios']))
+            ->assertSessionHas('status');
+
+        $this->assertTrue($user->fresh()->activo);
+    }
+
+    public function test_admin_can_delete_another_user(): void
+    {
+        $admin = $this->admin();
+        $user = User::factory()->create();
+
+        $this->actingAs($admin)->delete(route('admin.usuarios.destroy', $user))
+            ->assertRedirect(route('dashboard', ['tab' => 'usuarios']))
+            ->assertSessionHas('status');
+
+        $this->assertModelMissing($user);
     }
 
 
@@ -67,13 +124,15 @@ class UserManagementTest extends TestCase
     }
 
 
-    public function test_admin_can_delete_their_own_account_if_another_active_admin_remains(): void
+    public function test_admin_cannot_delete_their_own_account_even_if_another_admin_remains(): void
     {
         $admin = $this->admin();
         $this->admin();
-        $this->actingAs($admin)->delete(route('admin.usuarios.destroy', $admin))->assertRedirect('/');
-        $this->assertGuest();
-        $this->assertDatabaseMissing('users', ['id' => $admin->id]);
+        $this->actingAs($admin)->delete(route('admin.usuarios.destroy', $admin))
+            ->assertRedirect(route('dashboard', ['tab' => 'usuarios']))
+            ->assertSessionHas('error', 'No puedes eliminar tu propia cuenta desde esta sección.');
+        $this->assertAuthenticatedAs($admin);
+        $this->assertModelExists($admin);
     }
 
 

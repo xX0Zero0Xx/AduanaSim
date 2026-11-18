@@ -60,6 +60,10 @@ class UserController extends Controller
 
     public function update(Request $request, User $usuario): RedirectResponse
     {
+        if ($usuario->id === Auth::id()) {
+            return $this->usersRedirect()->with('error', 'No puedes editar tu propia cuenta desde esta sección.');
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($usuario->id)],
@@ -69,13 +73,6 @@ class UserController extends Controller
             return redirect()->route('dashboard', ['tab' => 'usuarios'])->withErrors($validator)->withInput();
         }
         $validated = $validator->validated();
-
-
-        // Self-edit is allowed, but an administrator cannot demote themselves in this form.
-        if ($usuario->id === Auth::id() && $usuario->isAdmin()) {
-            $validated['rol'] = 'admin';
-        }
-
 
         // Never remove or demote the last active administrator.
         if ($usuario->isAdmin() && ($validated['rol'] !== 'admin' || !($usuario->activo ?? true))) {
@@ -120,8 +117,9 @@ class UserController extends Controller
 
     public function destroy(User $usuario): RedirectResponse
     {
-        $isSelf = $usuario->id === Auth::id();
-
+        if ($usuario->id === Auth::id()) {
+            return $this->usersRedirect()->with('error', 'No puedes eliminar tu propia cuenta desde esta sección.');
+        }
 
         if ($usuario->isAdmin()) {
             $activeAdmins = User::where('rol', 'admin')->where('activo', true)->count();
@@ -135,15 +133,6 @@ class UserController extends Controller
         $name = $usuario->name;
         $usuario->equipos()->detach();
         $usuario->delete();
-
-
-        if ($isSelf) {
-            Auth::logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
-            return redirect()->route('home')->with('status', 'Tu cuenta fue eliminada.');
-        }
-
 
         return $this->usersRedirect()->with('status', "Usuario «{$name}» eliminado.");
     }
