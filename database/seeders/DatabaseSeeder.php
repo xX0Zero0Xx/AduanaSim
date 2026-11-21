@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UsuariosDePrueba::class,
-            // CatalogosCompletosSeeder::class,
+            CatalogosCompletosSeeder::class,
         ]);
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'rol'])]
+#[Fillable(['name', 'email', 'password', 'rol', 'activo'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -22,6 +22,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'activo' => 'boolean',
         ];
     }
 
@@ -53,4 +54,20 @@ class User extends Authenticatable
             ->withPivot('rol_en_equipo')
             ->withTimestamps();
     }
+
+    public function pedimentos()
+    {
+        return $this->hasMany(Pedimento::class);
+    }
+
+    public function coves()
+    {
+        return $this->hasMany(Cove::class);
+    }
+
+    public function dodas()
+    {
+        return $this->hasMany(Doda::class);
+    }
 }
+

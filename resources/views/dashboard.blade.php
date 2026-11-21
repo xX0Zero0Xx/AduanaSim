@@ -37,9 +37,9 @@
             'descripcion' => 'Elabora documentos aduaneros, trabaja con tu equipo y envía tus ejercicios a validación.',
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
-                ['id' => 'pedimentos', 'label' => 'Pedimentos', 'icon' => '▤'],
-                ['id' => 'cove', 'label' => 'COVE', 'icon' => '▧'],
-                ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
+                ['id' => 'pedimentos', 'label' => 'Pedimento', 'icon' => '▤'],
+                ['id' => 'cove', 'label' => 'Cove', 'icon' => '▧'],
+                ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
                 ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
@@ -124,7 +124,10 @@
                     aria-labelledby="tab-inicio"
                     tabindex="0"
                 >
-                    @include('dashboard.partials.roles.' . $rol . '.inicio')
+                    @include('dashboard.partials.roles.' . $rol . '.inicio', [
+                        'registeredUserCount' => $registeredUserCount,
+                        'stats' => $stats ?? null,
+                    ])
                 </div>
 
                 {{-- ADMIN --}}
@@ -162,12 +165,21 @@
                             aria-labelledby="tab-{{ $key }}"
                             tabindex="0"
                         >
-                            @include('dashboard.partials.estado-vacio', [
-                                'titulo' => $data[0],
-                                'descripcion' => $data[1],
-                                'icono' => $data[2],
-                                'mensaje' => 'Todavía no hay registros para mostrar.'
-                            ])
+                            @if ($key === 'usuarios')
+                                @include('dashboard.partials.roles.admin.usuarios', [
+                                    'titulo' => $data[0],
+                                    'descripcion' => $data[1],
+                                    'icono' => $data[2],
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
+                                ])
+                            @else
+                                @include('dashboard.partials.estado-vacio', [
+                                    'titulo' => $data[0],
+                                    'descripcion' => $data[1],
+                                    'icono' => $data[2],
+                                    'mensaje' => 'Todavía no hay registros para mostrar.'
+                                ])
+                            @endif
                         </div>
 
                     @endforeach
@@ -278,15 +290,98 @@
 
                 @include('dashboard.partials.modulo-ia.index')
 
-            @elseif (in_array($key, ['pedimentos', 'cove', 'doda'], true))
+            @elseif ($key === 'pedimentos')
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Módulo de pedimentos</span>
+                            <h3>Pedimentos</h3>
+                            <p>Elabora, consulta y administra ejercicios de pedimentos dentro del simulador.</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="{{ route('capturista.pedimentos.create') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo pedimento</h4>
+                            <p>Captura cabecera, partidas y valores. Se guarda como borrador.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="{{ route('capturista.pedimentos.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis pedimentos</h4>
+                            <p>Consulta el historial, edita borradores y envía a validación.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
 
-                @include('dashboard.partials.estado-vacio', [
-                    'titulo' => $data[0],
-                    'descripcion' => $data[1],
-                    'icono' => $data[2],
-                    'mensaje' => 'El formulario de captura estará disponible en la siguiente etapa de desarrollo.',
-                    'accion' => 'Módulo en preparación'
-                ])
+            @elseif ($key === 'cove')
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">COVE</span>
+                            <h3>Comprobante de valor electrónico</h3>
+                            <p>Captura emisores, facturas y mercancías; opcionalmente vincula un pedimento.</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="{{ route('capturista.coves.create') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo COVE</h4>
+                            <p>Inicia la captura del comprobante de valor.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="{{ route('capturista.coves.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis COVE</h4>
+                            <p>Lista, edita y envía a validación.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
+
+            @elseif ($key === 'doda')
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">DODA</span>
+                            <h3>Documento de operación para despacho</h3>
+                            <p>Asocia pedimentos y genera identificadores simulados (QR / barras).</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="{{ route('capturista.dodas.create') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo DODA</h4>
+                            <p>Registra datos de despacho y pedimentos asociados.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="{{ route('capturista.dodas.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis DODA</h4>
+                            <p>Consulta y gestiona tus documentos de despacho.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
+
+            @elseif ($key === 'historial')
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Historial</span>
+                            <h3>Mis documentos</h3>
+                            <p>Vista unificada de pedimentos, COVE y DODA.</p>
+                        </div>
+                        <a href="{{ route('capturista.historial.index') }}" class="aduana-btn aduana-btn--primary">Abrir historial</a>
+                    </div>
+                </div>
+
+            @elseif ($key === 'equipo')
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
+                            <h3>Mi equipo</h3>
+                            <p>Integrantes y documentos compartidos.</p>
+                        </div>
+                        <a href="{{ route('capturista.equipo.index') }}" class="aduana-btn aduana-btn--primary">Ver equipos</a>
+                    </div>
+                </div>
 
             @else
 

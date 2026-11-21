@@ -4,7 +4,7 @@
         <div class="aduana-home__stamp"><span>AS</span><small>ADMIN</small></div>
     </div>
     <div class="aduana-stat-grid">
-        <article class="aduana-stat-card"><span class="aduana-stat-card__label">Usuarios registrados</span><strong>—</strong><small>Sin datos disponibles</small></article>
+        <article class="aduana-stat-card"><span class="aduana-stat-card__label">Usuarios registrados</span><strong>{{ $registeredUserCount }}</strong><small>Cuenta(s) en el sistema</small></article>
         <article class="aduana-stat-card"><span class="aduana-stat-card__label">Equipos creados</span><strong>—</strong><small>Sin datos disponibles</small></article>
         <article class="aduana-stat-card"><span class="aduana-stat-card__label">Documentos generados</span><strong>—</strong><small>Sin datos disponibles</small></article>
         <article class="aduana-stat-card"><span class="aduana-stat-card__label">Módulos activos</span><strong>—</strong><small>Configuración pendiente</small></article>
