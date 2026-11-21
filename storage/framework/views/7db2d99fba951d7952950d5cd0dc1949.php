@@ -41,4 +41,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH /home/lozada/Descargas/V3/AduanaSim/resources/views/layouts/app.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/lozada/Escritorio/AduanaSim/resources/views/layouts/app.blade.php ENDPATH**/ ?>

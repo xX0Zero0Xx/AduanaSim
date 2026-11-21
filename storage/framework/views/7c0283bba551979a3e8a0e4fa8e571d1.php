@@ -38,4 +38,4 @@
         <form method="POST" action="<?php echo e(route('logout')); ?>"><?php echo csrf_field(); ?><button type="submit">Cerrar sesión</button></form>
     </div>
 </nav>
-<?php /**PATH /home/lozada/Descargas/V3/AduanaSim/resources/views/layouts/navigation.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/lozada/Escritorio/AduanaSim/resources/views/layouts/navigation.blade.php ENDPATH**/ ?>
