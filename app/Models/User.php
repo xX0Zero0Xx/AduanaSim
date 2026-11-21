@@ -54,4 +54,20 @@ class User extends Authenticatable
             ->withPivot('rol_en_equipo')
             ->withTimestamps();
     }
+
+    public function pedimentos()
+    {
+        return $this->hasMany(Pedimento::class);
+    }
+
+    public function coves()
+    {
+        return $this->hasMany(Cove::class);
+    }
+
+    public function dodas()
+    {
+        return $this->hasMany(Doda::class);
+    }
 }
+

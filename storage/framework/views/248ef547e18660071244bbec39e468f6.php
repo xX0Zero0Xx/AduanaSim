@@ -43,4 +43,4 @@
         </div>
     </dl>
 </section>
-<?php /**PATH /home/lozada/Descargas/V3/AduanaSim/resources/views/profile/partials/show-information-from.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/lozada/Escritorio/AduanaSim/resources/views/profile/partials/show-information-from.blade.php ENDPATH**/ ?>

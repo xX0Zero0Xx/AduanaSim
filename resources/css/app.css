@@ -1662,3 +1662,212 @@ html.dark .shadow-md,
 html.dark .shadow-lg {
     --tw-shadow-color: #000000;
 }
+
+/* Capturista forms & lists */
+.aduana-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px 16px;
+}
+.aduana-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.aduana-field--full {
+    grid-column: 1 / -1;
+}
+.aduana-field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--aduana-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.aduana-input {
+    border: 1px solid var(--aduana-line);
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    background: #fff;
+    font-size: 0.92rem;
+    color: #253443;
+    width: 100%;
+}
+.aduana-input--sm {
+    min-width: 70px;
+}
+.aduana-input:focus {
+    outline: 2px solid rgba(61, 135, 142, 0.25);
+    border-color: var(--aduana-teal);
+}
+.aduana-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+.aduana-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border: 1px solid var(--aduana-line);
+    background: #fff;
+    color: var(--aduana-navy);
+    cursor: pointer;
+    text-decoration: none;
+}
+.aduana-btn--primary {
+    background: var(--aduana-navy);
+    border-color: var(--aduana-navy);
+    color: #fff;
+}
+.aduana-btn--danger {
+    background: #b42318;
+    border-color: #b42318;
+    color: #fff;
+}
+.aduana-btn--ghost {
+    background: transparent;
+}
+.aduana-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 1rem 0 1.25rem;
+    align-items: center;
+}
+.aduana-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--aduana-line);
+    border-radius: 14px;
+    background: #fff;
+}
+.aduana-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.aduana-table th,
+.aduana-table td {
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--aduana-line);
+    text-align: left;
+    vertical-align: middle;
+}
+.aduana-table th {
+    background: #f7f9fa;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--aduana-muted);
+}
+.aduana-table-actions {
+    display: flex;
+    gap: 10px;
+    white-space: nowrap;
+}
+.aduana-table-actions a {
+    color: var(--aduana-petrol);
+    font-weight: 600;
+    text-decoration: none;
+}
+.aduana-link {
+    color: var(--aduana-petrol);
+    font-weight: 600;
+    text-decoration: none;
+}
+.aduana-link:hover {
+    text-decoration: underline;
+}
+.aduana-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.aduana-badge--muted { background: #eef1f4; color: #4b5c6b; }
+.aduana-badge--warn { background: #fff4d6; color: #8a6a00; }
+.aduana-badge--ok { background: #e3f6ee; color: #0f6b45; }
+.aduana-badge--danger { background: #fde8e6; color: #b42318; }
+.aduana-alert {
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+}
+.aduana-alert--ok { background: #e3f6ee; color: #0f6b45; }
+.aduana-alert--danger { background: #fde8e6; color: #b42318; }
+.aduana-alert--warn { background: #fff4d6; color: #6b5300; }
+.aduana-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 1rem;
+}
+.aduana-detail-grid .label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--aduana-muted);
+    margin-bottom: 2px;
+}
+.aduana-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+.aduana-check-list {
+    display: grid;
+    gap: 8px;
+}
+.aduana-check-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--aduana-line);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+}
+.aduana-check-item small {
+    display: block;
+    color: var(--aduana-muted);
+}
+.aduana-simple-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.aduana-simple-list li {
+    padding: 0.45rem 0;
+    border-bottom: 1px solid var(--aduana-line);
+}
+.aduana-module-view__heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.aduana-form-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--aduana-line);
+}
+.aduana-form-section__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--aduana-navy);
+    margin: 0 0 0.75rem;
+}

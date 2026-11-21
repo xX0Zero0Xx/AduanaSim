@@ -37,9 +37,9 @@
             'descripcion' => 'Elabora documentos aduaneros, trabaja con tu equipo y envía tus ejercicios a validación.',
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
-                ['id' => 'pedimentos', 'label' => 'Pedimentos', 'icon' => '▤'],
-                ['id' => 'cove', 'label' => 'COVE', 'icon' => '▧'],
-                ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
+                ['id' => 'pedimentos', 'label' => 'Pedimento', 'icon' => '▤'],
+                ['id' => 'cove', 'label' => 'Cove', 'icon' => '▧'],
+                ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
                 ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
@@ -136,6 +136,7 @@
                 >
                     <?php echo $__env->make('dashboard.partials.roles.' . $rol . '.inicio', [
                         'registeredUserCount' => $registeredUserCount,
+                        'stats' => $stats ?? null,
                     ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 </div>
 
@@ -299,15 +300,98 @@
 
                 <?php echo $__env->make('dashboard.partials.modulo-ia.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-            <?php elseif(in_array($key, ['pedimentos', 'cove', 'doda'], true)): ?>
+            <?php elseif($key === 'pedimentos'): ?>
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Módulo de pedimentos</span>
+                            <h3>Pedimentos</h3>
+                            <p>Elabora, consulta y administra ejercicios de pedimentos dentro del simulador.</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="<?php echo e(route('capturista.pedimentos.create')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo pedimento</h4>
+                            <p>Captura cabecera, partidas y valores. Se guarda como borrador.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="<?php echo e(route('capturista.pedimentos.index')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis pedimentos</h4>
+                            <p>Consulta el historial, edita borradores y envía a validación.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
 
-                <?php echo $__env->make('dashboard.partials.estado-vacio', [
-                    'titulo' => $data[0],
-                    'descripcion' => $data[1],
-                    'icono' => $data[2],
-                    'mensaje' => 'El formulario de captura estará disponible en la siguiente etapa de desarrollo.',
-                    'accion' => 'Módulo en preparación'
-                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($key === 'cove'): ?>
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">COVE</span>
+                            <h3>Comprobante de valor electrónico</h3>
+                            <p>Captura emisores, facturas y mercancías; opcionalmente vincula un pedimento.</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="<?php echo e(route('capturista.coves.create')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo COVE</h4>
+                            <p>Inicia la captura del comprobante de valor.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="<?php echo e(route('capturista.coves.index')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis COVE</h4>
+                            <p>Lista, edita y envía a validación.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
+
+            <?php elseif($key === 'doda'): ?>
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">DODA</span>
+                            <h3>Documento de operación para despacho</h3>
+                            <p>Asocia pedimentos y genera identificadores simulados (QR / barras).</p>
+                        </div>
+                    </div>
+                    <div class="aduana-choice-grid">
+                        <a href="<?php echo e(route('capturista.dodas.create')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Nuevo DODA</h4>
+                            <p>Registra datos de despacho y pedimentos asociados.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                        <a href="<?php echo e(route('capturista.dodas.index')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                            <h4>Mis DODA</h4>
+                            <p>Consulta y gestiona tus documentos de despacho.</p>
+                            <span class="aduana-status">Disponible</span>
+                        </a>
+                    </div>
+                </div>
+
+            <?php elseif($key === 'historial'): ?>
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Historial</span>
+                            <h3>Mis documentos</h3>
+                            <p>Vista unificada de pedimentos, COVE y DODA.</p>
+                        </div>
+                        <a href="<?php echo e(route('capturista.historial.index')); ?>" class="aduana-btn aduana-btn--primary">Abrir historial</a>
+                    </div>
+                </div>
+
+            <?php elseif($key === 'equipo'): ?>
+                <div class="aduana-module-view">
+                    <div class="aduana-module-view__heading">
+                        <div>
+                            <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
+                            <h3>Mi equipo</h3>
+                            <p>Integrantes y documentos compartidos.</p>
+                        </div>
+                        <a href="<?php echo e(route('capturista.equipo.index')); ?>" class="aduana-btn aduana-btn--primary">Ver equipos</a>
+                    </div>
+                </div>
 
             <?php else: ?>
 
@@ -361,4 +445,4 @@
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
 <?php endif; ?>
-<?php /**PATH /home/lozada/Descargas/V3/AduanaSim/resources/views/dashboard.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/lozada/Escritorio/AduanaSim/resources/views/dashboard.blade.php ENDPATH**/ ?>
