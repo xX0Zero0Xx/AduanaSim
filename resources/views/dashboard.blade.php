@@ -37,9 +37,9 @@
             'descripcion' => 'Elabora documentos aduaneros, trabaja con tu equipo y envía tus ejercicios a validación.',
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
-                ['id' => 'pedimentos', 'label' => 'Pedimentos', 'icon' => '▤'],
-                ['id' => 'cove', 'label' => 'COVE', 'icon' => '▧'],
-                ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
+                ['id' => 'pedimentos', 'label' => 'Pedimento', 'icon' => '▤'],
+                ['id' => 'cove', 'label' => 'Cove', 'icon' => '▧'],
+                ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
                 ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
