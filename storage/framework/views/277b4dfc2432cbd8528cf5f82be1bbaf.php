@@ -37,9 +37,9 @@
             'descripcion' => 'Elabora documentos aduaneros, trabaja con tu equipo y envía tus ejercicios a validación.',
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
-                ['id' => 'pedimentos', 'label' => 'Pedimento', 'icon' => '▤'],
-                ['id' => 'cove', 'label' => 'Cove', 'icon' => '▧'],
-                ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
+                ['id' => 'pedimentos', 'label' => 'Pedimentos', 'icon' => '▤'],
+                ['id' => 'cove', 'label' => 'COVE', 'icon' => '▧'],
+                ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
                 ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
@@ -81,6 +81,7 @@
             <!--- <div class="aduana-welcome__mark" aria-hidden="true">
                 <img src="<?php echo e(asset('images/aduanasim-logo.png')); ?>" alt="">
             </div> -->
+            
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -375,10 +376,45 @@
                         <div>
                             <span class="aduana-eyebrow aduana-eyebrow--muted">Historial</span>
                             <h3>Mis documentos</h3>
-                            <p>Vista unificada de pedimentos, COVE y DODA.</p>
+                            <p>Vista unificada de pedimentos, COVE y DODA (propios o de tu equipo).</p>
                         </div>
-                        <a href="<?php echo e(route('capturista.historial.index')); ?>" class="aduana-btn aduana-btn--primary">Abrir historial</a>
                     </div>
+
+                    <?php $items = $historialItems ?? collect(); ?>
+                    <?php if($items->isEmpty()): ?>
+                        <div class="aduana-empty-state">
+                            <div class="aduana-empty-state__icon">◷</div>
+                            <strong>Sin documentos</strong>
+                            <p>Cuando captures pedimentos, COVE o DODA aparecerán aquí.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="aduana-table-wrap">
+                            <table class="aduana-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Folio</th>
+                                        <th>Detalle</th>
+                                        <th>Estatus</th>
+                                        <th>Actualizado</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td><?php echo e($item['tipo']); ?></td>
+                                            <td><strong><?php echo e($item['folio']); ?></strong></td>
+                                            <td><?php echo e($item['extra'] ?: '—'); ?></td>
+                                            <td><?php echo $__env->make('capturista.partials.estatus-badge', ['estatus' => $item['estatus'], 'etiqueta' => $item['etiqueta']], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?></td>
+                                            <td><?php echo e($item['fecha']?->format('d/m/Y H:i')); ?></td>
+                                            <td><a class="aduana-link" href="<?php echo e($item['url']); ?>">Abrir</a></td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
             <?php elseif($key === 'equipo'): ?>
@@ -387,10 +423,59 @@
                         <div>
                             <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
                             <h3>Mi equipo</h3>
-                            <p>Integrantes y documentos compartidos.</p>
+                            <p>Integrantes y documentos compartidos con tu equipo de trabajo.</p>
                         </div>
-                        <a href="<?php echo e(route('capturista.equipo.index')); ?>" class="aduana-btn aduana-btn--primary">Ver equipos</a>
                     </div>
+
+                    <?php
+                        $listaEquipos = $equipos ?? collect();
+                        $statsEq = $statsPorEquipo ?? [];
+                    ?>
+
+                    <?php if($listaEquipos->isEmpty()): ?>
+                        <div class="aduana-empty-state">
+                            <div class="aduana-empty-state__icon">♧</div>
+                            <strong>Sin equipo asignado</strong>
+                            <p>Un administrador o agente puede asignarte a un equipo de trabajo.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="aduana-module-grid">
+                            <?php $__currentLoopData = $listaEquipos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $equipo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <article class="aduana-module-card">
+                                    <div class="aduana-module-card__icon aduana-module-card__icon--navy">♧</div>
+                                    <span class="aduana-module-card__kicker"><?php echo e($equipo->pivot->rol_en_equipo ?? 'miembro'); ?></span>
+                                    <h4><?php echo e($equipo->nombre); ?></h4>
+                                    <p><?php echo e($equipo->descripcion ?: 'Sin descripción'); ?></p>
+                                    <div class="aduana-stat-grid aduana-stat-grid--three mt-3">
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">Pedimentos</span>
+                                            <strong><?php echo e($statsEq[$equipo->id]['pedimentos'] ?? 0); ?></strong>
+                                        </div>
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">COVE</span>
+                                            <strong><?php echo e($statsEq[$equipo->id]['coves'] ?? 0); ?></strong>
+                                        </div>
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">DODA</span>
+                                            <strong><?php echo e($statsEq[$equipo->id]['dodas'] ?? 0); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <strong class="text-sm">Integrantes</strong>
+                                        <ul class="aduana-simple-list mt-2">
+                                            <?php $__currentLoopData = $equipo->users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li>
+                                                    <?php echo e($member->name); ?>
+
+                                                    <small class="text-slate-500">· <?php echo e($member->rol); ?> <?php if(!$member->activo): ?> (suspendido) <?php endif; ?></small>
+                                                </li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    </div>
+                                </article>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
             <?php else: ?>

@@ -24,6 +24,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $user = $request->user();
 
         $stats = null;
+        $historialItems = collect();
+        $equipos = collect();
+        $statsPorEquipo = [];
 
         if ($user->isCapturista()) {
             $stats = [
@@ -37,12 +40,70 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     + Cove::visiblesPara($user)->where('estatus', 'validado')->count()
                     + Doda::visiblesPara($user)->where('estatus', 'validado')->count(),
             ];
+
+            // Historial unificado (misma pestaña del panel)
+            Pedimento::visiblesPara($user)->latest()->limit(40)->get()->each(function ($doc) use ($historialItems) {
+                $historialItems->push([
+                    'tipo' => 'Pedimento',
+                    'folio' => $doc->folio,
+                    'estatus' => $doc->estatus,
+                    'etiqueta' => $doc->etiquetaEstatus(),
+                    'fecha' => $doc->updated_at,
+                    'url' => route('capturista.pedimentos.show', $doc),
+                    'extra' => $doc->nombre_operador,
+                ]);
+            });
+            Cove::visiblesPara($user)->latest()->limit(40)->get()->each(function ($doc) use ($historialItems) {
+                $historialItems->push([
+                    'tipo' => 'COVE',
+                    'folio' => $doc->folio,
+                    'estatus' => $doc->estatus,
+                    'etiqueta' => $doc->etiquetaEstatus(),
+                    'fecha' => $doc->updated_at,
+                    'url' => route('capturista.coves.show', $doc),
+                    'extra' => $doc->emisor_nombre,
+                ]);
+            });
+            Doda::visiblesPara($user)->latest()->limit(40)->get()->each(function ($doc) use ($historialItems) {
+                $historialItems->push([
+                    'tipo' => 'DODA',
+                    'folio' => $doc->folio,
+                    'estatus' => $doc->estatus,
+                    'etiqueta' => $doc->etiquetaEstatus(),
+                    'fecha' => $doc->updated_at,
+                    'url' => route('capturista.dodas.show', $doc),
+                    'extra' => $doc->transporte_identificacion ?? null,
+                ]);
+            });
+            $historialItems = $historialItems->sortByDesc(fn($i) => $i['fecha'])->values();
+
+            // Equipos del capturista (misma pestaña del panel)
+            if (method_exists($user, 'equipos')) {
+                $equipos = $user->equipos()
+                    ->where('equipos.activo', true)
+                    ->with(['users' => function ($q) {
+                        $q->select('users.id', 'users.name', 'users.email', 'users.rol', 'users.activo')
+                            ->orderBy('users.name');
+                    }])
+                    ->get();
+
+                foreach ($equipos as $equipo) {
+                    $statsPorEquipo[$equipo->id] = [
+                        'pedimentos' => Pedimento::where('equipo_id', $equipo->id)->count(),
+                        'coves' => Cove::where('equipo_id', $equipo->id)->count(),
+                        'dodas' => Doda::where('equipo_id', $equipo->id)->count(),
+                    ];
+                }
+            }
         }
 
         return view('dashboard', [
             'user' => $user,
             'registeredUserCount' => $user->isAdmin() ? User::query()->count() : null,
             'stats' => $stats,
+            'historialItems' => $historialItems,
+            'equipos' => $equipos,
+            'statsPorEquipo' => $statsPorEquipo,
         ]);
     })->name('dashboard');
 

@@ -7,7 +7,8 @@
                     <h3>Mis pedimentos</h3>
                     <p>Elabora, consulta y envía a validación tus ejercicios de pedimento.</p>
                 </div>
-                <a href="{{ route('capturista.pedimentos.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo pedimento</a>
+
+<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
             </div>
 
             @include('capturista.partials.flash')
@@ -20,8 +21,10 @@
                         <option value="{{ $k }}" @selected(request('estatus') === $k)>{{ $v }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="aduana-btn">Filtrar</button>
-                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
+                <!-- <button type="submit" class="aduana-btn">Filtrar</button> -->
+                
+<a href="{{ route('capturista.pedimentos.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo pedimento</a>
+
             </form>
 
             @if ($pedimentos->isEmpty())
@@ -59,7 +62,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="{{ route('capturista.pedimentos.show', $p) }}">Ver</a>
                                         @if ($p->puedeEditarse())
-                                            <a href="{{ route('capturista.pedimentos.edit', $p) }}">Editar</a>
+                                            <!-- <a href="{{ route('capturista.pedimentos.edit', $p) }}">Editar</a> -->
                                         @endif
                                     </td>
                                 </tr>

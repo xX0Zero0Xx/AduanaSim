@@ -43,14 +43,14 @@
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon aduana-module-card__icon--teal">▧</div>
             <span class="aduana-module-card__kicker">COMPROBANTE DE VALOR</span>
-            <h4>COVE</h4>
+            <h4>Cove</h4>
             <p>Captura datos de valor y relaciónalos con un pedimento.</p>
             <a href="{{ route('capturista.coves.index') }}" class="aduana-text-action">Abrir módulo <span>→</span></a>
         </article>
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon aduana-module-card__icon--gold">▦</div>
             <span class="aduana-module-card__kicker">DESPACHO ADUANERO</span>
-            <h4>DODA</h4>
+            <h4>Doda</h4>
             <p>Prepara la información para la representación académica del DODA.</p>
             <a href="{{ route('capturista.dodas.index') }}" class="aduana-text-action">Abrir módulo <span>→</span></a>
         </article>

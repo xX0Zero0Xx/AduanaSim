@@ -16,7 +16,9 @@
                     <h3>Documento de operación para despacho</h3>
                     <p>Asocia pedimentos y genera la representación académica del DODA.</p>
                 </div>
-                <a href="<?php echo e(route('capturista.dodas.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo DODA</a>
+
+<a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Volver al Panel</a>
+
             </div>
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <form method="GET" class="aduana-filter-bar">
@@ -27,8 +29,11 @@
                         <option value="<?php echo e($e); ?>" <?php if(request('estatus')===$e): echo 'selected'; endif; ?>><?php echo e(ucfirst($e)); ?></option>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
-                <button class="aduana-btn" type="submit">Filtrar</button>
-                <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Panel</a>
+                <!-- <button class="aduana-btn" type="submit">Filtrar</button> -->
+
+<a href="<?php echo e(route('capturista.dodas.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo DODA</a>
+
+
             </form>
             <?php if($dodas->isEmpty()): ?>
                 <div class="aduana-empty-state">
@@ -61,7 +66,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="<?php echo e(route('capturista.dodas.show', $d)); ?>">Ver</a>
                                         <?php if($d->puedeEditarse()): ?>
-                                            <a href="<?php echo e(route('capturista.dodas.edit', $d)); ?>">Editar</a>
+                                            <!-- <a href="<?php echo e(route('capturista.dodas.edit', $d)); ?>">Editar</a> -->
                                         <?php endif; ?>
                                     </td>
                                 </tr>

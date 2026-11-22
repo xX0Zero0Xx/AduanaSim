@@ -7,7 +7,9 @@
                     <h3>Documento de operación para despacho</h3>
                     <p>Asocia pedimentos y genera la representación académica del DODA.</p>
                 </div>
-                <a href="{{ route('capturista.dodas.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo DODA</a>
+
+<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al Panel</a>
+
             </div>
             @include('capturista.partials.flash')
             <form method="GET" class="aduana-filter-bar">
@@ -18,8 +20,11 @@
                         <option value="{{ $e }}" @selected(request('estatus')===$e)>{{ ucfirst($e) }}</option>
                     @endforeach
                 </select>
-                <button class="aduana-btn" type="submit">Filtrar</button>
-                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Panel</a>
+                <!-- <button class="aduana-btn" type="submit">Filtrar</button> -->
+
+<a href="{{ route('capturista.dodas.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo DODA</a>
+
+
             </form>
             @if ($dodas->isEmpty())
                 <div class="aduana-empty-state">
@@ -52,7 +57,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="{{ route('capturista.dodas.show', $d) }}">Ver</a>
                                         @if ($d->puedeEditarse())
-                                            <a href="{{ route('capturista.dodas.edit', $d) }}">Editar</a>
+                                            <!-- <a href="{{ route('capturista.dodas.edit', $d) }}">Editar</a> -->
                                         @endif
                                     </td>
                                 </tr>

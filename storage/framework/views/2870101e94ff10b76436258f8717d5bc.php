@@ -16,7 +16,10 @@
                     <h3>Captura de pedimento</h3>
                     <p>Completa la cabecera y las partidas. Se guardará como borrador.</p>
                 </div>
-                <a href="<?php echo e(route('capturista.pedimentos.index')); ?>" class="aduana-btn aduana-btn--ghost">← Lista</a>
+
+<!-- <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">← Volver al panel</a> -->
+
+                <!-- <a href="<?php echo e(route('capturista.pedimentos.index')); ?>" class="aduana-btn aduana-btn--ghost">← Lista</a> -->
             </div>
 
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
@@ -26,7 +29,7 @@
                 <?php echo $__env->make('capturista.pedimentos._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 <div class="aduana-form-actions">
                     <button type="submit" class="aduana-btn aduana-btn--primary">Guardar borrador</button>
-                    <a href="<?php echo e(route('capturista.pedimentos.index')); ?>" class="aduana-btn aduana-btn--ghost">Cancelar</a>
+                    <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Cancelar</a>
                 </div>
             </form>
         </section>

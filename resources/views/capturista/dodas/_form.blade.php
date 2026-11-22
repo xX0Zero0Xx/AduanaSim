@@ -107,22 +107,22 @@ async function lookupPedimentoForDoda() {
     </div>
 </div>
 
-<div class="aduana-role-section-title mt-6">
+<!-- <div class="aduana-role-section-title mt-6">
     <div>
         <h4>Pedimentos asociados</h4>
         <p>Selecciona uno o más pedimentos que integrarán este DODA.</p>
     </div>
-</div>
+</div> -->
 
 <div class="aduana-check-list">
     @forelse ($pedimentos as $p)
-        <label class="aduana-check-item">
+        <!-- <label class="aduana-check-item">
             <input type="checkbox" name="pedimento_ids[]" value="{{ $p->id }}" @checked(in_array($p->id, $selectedPedimentos))>
             <span>
                 <strong>{{ $p->folio }}</strong>
                 <small>{{ $p->nombre_operador ?: 'Sin operador' }} · {{ $p->estatus }}</small>
             </span>
-        </label>
+        </label> -->
     @empty
         <p class="text-slate-500">No hay pedimentos disponibles. Crea uno primero.</p>
     @endforelse

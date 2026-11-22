@@ -11,7 +11,14 @@
                     </p>
                 </div>
                 <div class="aduana-actions-row">
-                    <a href="{{ route('capturista.pedimentos.index') }}" class="aduana-btn aduana-btn--ghost">← Lista</a>
+
+<!-- <a href="{{ route('capturista.historial.index') }}" class="aduana-btn aduana-btn--ghost">← Volver a Mis documentos</a> -->
+
+<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al panel</a>
+
+                    <!-- <a href="{{ route('capturista.pedimentos.index') }}" class="aduana-btn aduana-btn--ghost">← Lista</a> -->
+
+
                     @if ($pedimento->puedeEditarse())
                         <a href="{{ route('capturista.pedimentos.edit', $pedimento) }}" class="aduana-btn">Editar</a>
                     @endif

@@ -7,7 +7,9 @@
                     <h3>Comprobantes de valor electrónico</h3>
                     <p>Captura y consulta tus COVE académicos.</p>
                 </div>
-                <a href="{{ route('capturista.coves.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo COVE</a>
+
+<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Voler al Panel</a>
+                
             </div>
             @include('capturista.partials.flash')
             <form method="GET" class="aduana-filter-bar">
@@ -18,8 +20,10 @@
                         <option value="{{ $e }}" @selected(request('estatus')===$e)>{{ ucfirst($e) }}</option>
                     @endforeach
                 </select>
-                <button class="aduana-btn" type="submit">Filtrar</button>
-                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Panel</a>
+                <!-- <button class="aduana-btn" type="submit">Filtrar</button> -->
+                
+<a href="{{ route('capturista.coves.create') }}" class="aduana-btn aduana-btn--primary">+ Nuevo COVE</a>
+
             </form>
             @if ($coves->isEmpty())
                 <div class="aduana-empty-state">
@@ -54,7 +58,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="{{ route('capturista.coves.show', $c) }}">Ver</a>
                                         @if ($c->puedeEditarse())
-                                            <a href="{{ route('capturista.coves.edit', $c) }}">Editar</a>
+                                            <!-- <a href="{{ route('capturista.coves.edit', $c) }}">Editar</a> -->
                                         @endif
                                     </td>
                                 </tr>

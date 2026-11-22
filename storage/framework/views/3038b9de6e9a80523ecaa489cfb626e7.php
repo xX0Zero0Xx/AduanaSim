@@ -16,7 +16,9 @@
                     <h3>Comprobantes de valor electrónico</h3>
                     <p>Captura y consulta tus COVE académicos.</p>
                 </div>
-                <a href="<?php echo e(route('capturista.coves.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo COVE</a>
+
+<a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Voler al Panel</a>
+                
             </div>
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <form method="GET" class="aduana-filter-bar">
@@ -27,8 +29,10 @@
                         <option value="<?php echo e($e); ?>" <?php if(request('estatus')===$e): echo 'selected'; endif; ?>><?php echo e(ucfirst($e)); ?></option>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
-                <button class="aduana-btn" type="submit">Filtrar</button>
-                <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Panel</a>
+                <!-- <button class="aduana-btn" type="submit">Filtrar</button> -->
+                
+<a href="<?php echo e(route('capturista.coves.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo COVE</a>
+
             </form>
             <?php if($coves->isEmpty()): ?>
                 <div class="aduana-empty-state">
@@ -63,7 +67,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="<?php echo e(route('capturista.coves.show', $c)); ?>">Ver</a>
                                         <?php if($c->puedeEditarse()): ?>
-                                            <a href="<?php echo e(route('capturista.coves.edit', $c)); ?>">Editar</a>
+                                            <!-- <a href="<?php echo e(route('capturista.coves.edit', $c)); ?>">Editar</a> -->
                                         <?php endif; ?>
                                     </td>
                                 </tr>
