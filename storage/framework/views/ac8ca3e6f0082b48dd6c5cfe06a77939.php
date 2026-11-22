@@ -16,7 +16,8 @@
                     <h3>Mis pedimentos</h3>
                     <p>Elabora, consulta y envía a validación tus ejercicios de pedimento.</p>
                 </div>
-                <a href="<?php echo e(route('capturista.pedimentos.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo pedimento</a>
+
+<a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
             </div>
 
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
@@ -29,8 +30,10 @@
                         <option value="<?php echo e($k); ?>" <?php if(request('estatus') === $k): echo 'selected'; endif; ?>><?php echo e($v); ?></option>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
-                <button type="submit" class="aduana-btn">Filtrar</button>
-                <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
+                <!-- <button type="submit" class="aduana-btn">Filtrar</button> -->
+                
+<a href="<?php echo e(route('capturista.pedimentos.create')); ?>" class="aduana-btn aduana-btn--primary">+ Nuevo pedimento</a>
+
             </form>
 
             <?php if($pedimentos->isEmpty()): ?>
@@ -68,7 +71,7 @@
                                     <td class="aduana-table-actions">
                                         <a href="<?php echo e(route('capturista.pedimentos.show', $p)); ?>">Ver</a>
                                         <?php if($p->puedeEditarse()): ?>
-                                            <a href="<?php echo e(route('capturista.pedimentos.edit', $p)); ?>">Editar</a>
+                                            <!-- <a href="<?php echo e(route('capturista.pedimentos.edit', $p)); ?>">Editar</a> -->
                                         <?php endif; ?>
                                     </td>
                                 </tr>

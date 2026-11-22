@@ -37,9 +37,9 @@
             'descripcion' => 'Elabora documentos aduaneros, trabaja con tu equipo y envía tus ejercicios a validación.',
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
-                ['id' => 'pedimentos', 'label' => 'Pedimento', 'icon' => '▤'],
-                ['id' => 'cove', 'label' => 'Cove', 'icon' => '▧'],
-                ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
+                ['id' => 'pedimentos', 'label' => 'Pedimentos', 'icon' => '▤'],
+                ['id' => 'cove', 'label' => 'COVE', 'icon' => '▧'],
+                ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
                 ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
@@ -72,6 +72,7 @@
             <!--- <div class="aduana-welcome__mark" aria-hidden="true">
                 <img src="{{ asset('images/aduanasim-logo.png') }}" alt="">
             </div> -->
+            
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -365,10 +366,45 @@
                         <div>
                             <span class="aduana-eyebrow aduana-eyebrow--muted">Historial</span>
                             <h3>Mis documentos</h3>
-                            <p>Vista unificada de pedimentos, COVE y DODA.</p>
+                            <p>Vista unificada de pedimentos, COVE y DODA (propios o de tu equipo).</p>
                         </div>
-                        <a href="{{ route('capturista.historial.index') }}" class="aduana-btn aduana-btn--primary">Abrir historial</a>
                     </div>
+
+                    @php $items = $historialItems ?? collect(); @endphp
+                    @if ($items->isEmpty())
+                        <div class="aduana-empty-state">
+                            <div class="aduana-empty-state__icon">◷</div>
+                            <strong>Sin documentos</strong>
+                            <p>Cuando captures pedimentos, COVE o DODA aparecerán aquí.</p>
+                        </div>
+                    @else
+                        <div class="aduana-table-wrap">
+                            <table class="aduana-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Folio</th>
+                                        <th>Detalle</th>
+                                        <th>Estatus</th>
+                                        <th>Actualizado</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($items as $item)
+                                        <tr>
+                                            <td>{{ $item['tipo'] }}</td>
+                                            <td><strong>{{ $item['folio'] }}</strong></td>
+                                            <td>{{ $item['extra'] ?: '—' }}</td>
+                                            <td>@include('capturista.partials.estatus-badge', ['estatus' => $item['estatus'], 'etiqueta' => $item['etiqueta']])</td>
+                                            <td>{{ $item['fecha']?->format('d/m/Y H:i') }}</td>
+                                            <td><a class="aduana-link" href="{{ $item['url'] }}">Abrir</a></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
 
             @elseif ($key === 'equipo')
@@ -377,10 +413,58 @@
                         <div>
                             <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
                             <h3>Mi equipo</h3>
-                            <p>Integrantes y documentos compartidos.</p>
+                            <p>Integrantes y documentos compartidos con tu equipo de trabajo.</p>
                         </div>
-                        <a href="{{ route('capturista.equipo.index') }}" class="aduana-btn aduana-btn--primary">Ver equipos</a>
                     </div>
+
+                    @php
+                        $listaEquipos = $equipos ?? collect();
+                        $statsEq = $statsPorEquipo ?? [];
+                    @endphp
+
+                    @if ($listaEquipos->isEmpty())
+                        <div class="aduana-empty-state">
+                            <div class="aduana-empty-state__icon">♧</div>
+                            <strong>Sin equipo asignado</strong>
+                            <p>Un administrador o agente puede asignarte a un equipo de trabajo.</p>
+                        </div>
+                    @else
+                        <div class="aduana-module-grid">
+                            @foreach ($listaEquipos as $equipo)
+                                <article class="aduana-module-card">
+                                    <div class="aduana-module-card__icon aduana-module-card__icon--navy">♧</div>
+                                    <span class="aduana-module-card__kicker">{{ $equipo->pivot->rol_en_equipo ?? 'miembro' }}</span>
+                                    <h4>{{ $equipo->nombre }}</h4>
+                                    <p>{{ $equipo->descripcion ?: 'Sin descripción' }}</p>
+                                    <div class="aduana-stat-grid aduana-stat-grid--three mt-3">
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">Pedimentos</span>
+                                            <strong>{{ $statsEq[$equipo->id]['pedimentos'] ?? 0 }}</strong>
+                                        </div>
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">COVE</span>
+                                            <strong>{{ $statsEq[$equipo->id]['coves'] ?? 0 }}</strong>
+                                        </div>
+                                        <div class="aduana-stat-card">
+                                            <span class="aduana-stat-card__label">DODA</span>
+                                            <strong>{{ $statsEq[$equipo->id]['dodas'] ?? 0 }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <strong class="text-sm">Integrantes</strong>
+                                        <ul class="aduana-simple-list mt-2">
+                                            @foreach ($equipo->users as $member)
+                                                <li>
+                                                    {{ $member->name }}
+                                                    <small class="text-slate-500">· {{ $member->rol }} @if(!$member->activo) (suspendido) @endif</small>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
             @else

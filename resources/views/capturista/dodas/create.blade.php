@@ -6,7 +6,11 @@
                     <span class="aduana-eyebrow aduana-eyebrow--muted">Nuevo DODA</span>
                     <h3>Captura de DODA</h3>
                 </div>
-                <a href="{{ route('capturista.dodas.index') }}" class="aduana-btn aduana-btn--ghost">← Lista</a>
+
+<!-- <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al panel</a> -->
+
+
+                <!-- <a href="{{ route('capturista.dodas.index') }}" class="aduana-btn aduana-btn--ghost">← Lista</a> -->
             </div>
             @include('capturista.partials.flash')
             <form method="POST" action="{{ route('capturista.dodas.store') }}" class="aduana-form">
@@ -14,6 +18,7 @@
                 @include('capturista.dodas._form')
                 <div class="aduana-form-actions">
                     <button type="submit" class="aduana-btn aduana-btn--primary">Guardar borrador</button>
+                    <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Cancelar</a>
                 </div>
             </form>
         </section>

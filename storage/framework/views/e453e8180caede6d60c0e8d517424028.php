@@ -107,22 +107,22 @@ async function lookupPedimentoForDoda() {
     </div>
 </div>
 
-<div class="aduana-role-section-title mt-6">
+<!-- <div class="aduana-role-section-title mt-6">
     <div>
         <h4>Pedimentos asociados</h4>
         <p>Selecciona uno o más pedimentos que integrarán este DODA.</p>
     </div>
-</div>
+</div> -->
 
 <div class="aduana-check-list">
     <?php $__empty_1 = true; $__currentLoopData = $pedimentos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-        <label class="aduana-check-item">
+        <!-- <label class="aduana-check-item">
             <input type="checkbox" name="pedimento_ids[]" value="<?php echo e($p->id); ?>" <?php if(in_array($p->id, $selectedPedimentos)): echo 'checked'; endif; ?>>
             <span>
                 <strong><?php echo e($p->folio); ?></strong>
                 <small><?php echo e($p->nombre_operador ?: 'Sin operador'); ?> · <?php echo e($p->estatus); ?></small>
             </span>
-        </label>
+        </label> -->
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
         <p class="text-slate-500">No hay pedimentos disponibles. Crea uno primero.</p>
     <?php endif; ?>
