@@ -52,7 +52,14 @@
 @endphp
 
 <x-app-layout>
-    <div class="aduana-dashboard" x-data="{ tab: 'inicio' }">
+    @php
+        $tabInicial = request('tab', 'inicio');
+        $tabsValidas = collect($panel['tabs'])->pluck('id')->all();
+        if (! in_array($tabInicial, $tabsValidas, true)) {
+            $tabInicial = 'inicio';
+        }
+    @endphp
+    <div class="aduana-dashboard" x-data="{ tab: '{{ $tabInicial }}' }">
 
         <section class="aduana-welcome aduana-welcome--role">
             <div class="aduana-welcome__copy">
@@ -72,7 +79,6 @@
             <!--- <div class="aduana-welcome__mark" aria-hidden="true">
                 <img src="{{ asset('images/aduanasim-logo.png') }}" alt="">
             </div> -->
-            
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -188,39 +194,15 @@
                 {{-- AGENTE --}}
                 @elseif ($rol === 'agente')
 
-                    @foreach ([
-                        'pendientes' => [
-                            'Documentos por revisar',
-                            'Documentos que los capturistas han enviado para validación.',
-                            'clipboard-check',
-                            'No hay documentos pendientes de revisión.'
-                        ],
-                        'validados' => [
-                            'Documentos validados',
-                            'Consulta los documentos que ya recibieron una validación académica.',
-                            'badge-check',
-                            'No hay documentos validados.'
-                        ],
-                        'devueltos' => [
-                            'Documentos no validados',
-                            'Documentos devueltos con observaciones para su corrección.',
-                            'message-square-warning',
-                            'No hay documentos devueltos.'
-                        ],
-                        'historial' => [
-                            'Historial de revisiones',
-                            'Consulta las revisiones realizadas y filtra por capturista o tipo de documento.',
-                            'history',
-                            'No hay revisiones registradas.'
-                        ],
-                        'equipos' => [
-                            'Gestión de equipos',
-                            'Crea equipos de trabajo, incorpora capturistas y organiza la colaboración entre grupos.',
-                            'users-round',
-                            'Todavía no hay equipos registrados. Puedes crear tu primer equipo.'
-                        ],
-                    ] as $key => $data)
+                    @php $s = $agentStats ?? ['pendientes'=>0,'validados'=>0,'devueltos'=>0]; @endphp
 
+                    @foreach ([
+                        'pendientes' => ['Por revisar', 'Documentos enviados pendientes de decisión.', 'pendientes', $s['pendientes']],
+                        'validados' => ['Documentos validados', 'Revisiones académicas aprobadas.', 'validados', $s['validados']],
+                        'devueltos' => ['No validados', 'Devueltos con observaciones para corrección.', 'devueltos', $s['devueltos']],
+                        'historial' => ['Historial de revisiones', 'Consulta todas las revisiones realizadas.', 'historial', null],
+                        'equipos' => ['Gestión de equipos', 'Crea equipos e incorpora capturistas.', 'equipos', null],
+                    ] as $key => $data)
                         <div
                             x-cloak
                             x-show="tab === '{{ $key }}'"
@@ -230,17 +212,38 @@
                             aria-labelledby="tab-{{ $key }}"
                             tabindex="0"
                         >
-                            @include('dashboard.partials.estado-vacio', [
-                                'titulo' => $data[0],
-                                'descripcion' => $data[1],
-                                'icono' => $data[2],
-                                'mensaje' => $data[3]
-                            ])
+                            <div class="aduana-module-view">
+                                <div class="aduana-module-view__heading">
+                                    <div>
+                                        <span class="aduana-eyebrow aduana-eyebrow--muted">Agente</span>
+                                        <h3>{{ $data[0] }}</h3>
+                                        <p>{{ $data[1] }}@if($data[3] !== null) · <strong>{{ $data[3] }}</strong> documento(s)@endif</p>
+                                    </div>
+                                    @if ($key === 'equipos')
+                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-btn aduana-btn--primary">Administrar equipos</a>
+                                    @else
+                                        <a href="{{ route('agente.revisiones.index', $data[2]) }}" class="aduana-btn aduana-btn--primary">Abrir bandeja</a>
+                                    @endif
+                                </div>
+                                <div class="aduana-choice-grid">
+                                    @if ($key === 'equipos')
+                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Ver equipos</h4>
+                                            <p>Lista, crea y asigna capturistas a equipos de trabajo.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('agente.revisiones.index', $data[2]) }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Ir a {{ $data[0] }}</h4>
+                                            <p>Consulta, valida o devuelve documentos de esta bandeja.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-
                     @endforeach
 
-                
 {{-- CAPTURISTA --}}
 @else
 

@@ -1,7 +1,7 @@
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];
-$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((['value']));
+$__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames((['status']));
 
 foreach ($attributes->all() as $__key => $__value) {
     if (in_array($__key, $__propNames)) {
@@ -16,7 +16,7 @@ $attributes = new \Illuminate\View\ComponentAttributeBag($__newAttributes);
 unset($__propNames);
 unset($__newAttributes);
 
-foreach (array_filter((['value']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
+foreach (array_filter((['status']), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
 
@@ -28,8 +28,10 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<label <?php echo e($attributes->merge(['class' => 'block font-medium text-sm text-gray-700'])); ?>>
-    <?php echo e($value ?? $slot); ?>
+<?php if($status): ?>
+    <div <?php echo e($attributes->merge(['class' => 'font-medium text-sm text-green-600'])); ?>>
+        <?php echo e($status); ?>
 
-</label>
-<?php /**PATH /home/lozada/AduanaSim/resources/views/components/input-label.blade.php ENDPATH**/ ?>
+    </div>
+<?php endif; ?>
+<?php /**PATH /home/lozada/AduanaSim/resources/views/components/auth-session-status.blade.php ENDPATH**/ ?>

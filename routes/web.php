@@ -5,6 +5,8 @@ use App\Http\Controllers\Capturista\DodaController;
 use App\Http\Controllers\Capturista\EquipoController;
 use App\Http\Controllers\Capturista\HistorialController;
 use App\Http\Controllers\Capturista\PedimentoController;
+use App\Http\Controllers\Agente\RevisionController;
+use App\Http\Controllers\Agente\EquipoGestionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\Cove;
@@ -97,6 +99,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             }
         }
 
+
+        if ($user->isAgente() || $user->isAdmin()) {
+            $agentStats = [
+                'pendientes' => Pedimento::where('estatus', 'enviado')->count()
+                    + Cove::where('estatus', 'enviado')->count()
+                    + Doda::where('estatus', 'enviado')->count(),
+                'validados' => Pedimento::where('estatus', 'validado')->count()
+                    + Cove::where('estatus', 'validado')->count()
+                    + Doda::where('estatus', 'validado')->count(),
+                'devueltos' => Pedimento::where('estatus', 'devuelto')->count()
+                    + Cove::where('estatus', 'devuelto')->count()
+                    + Doda::where('estatus', 'devuelto')->count(),
+            ];
+        } else {
+            $agentStats = null;
+        }
+
         return view('dashboard', [
             'user' => $user,
             'registeredUserCount' => $user->isAdmin() ? User::query()->count() : null,
@@ -104,6 +123,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'historialItems' => $historialItems,
             'equipos' => $equipos,
             'statsPorEquipo' => $statsPorEquipo,
+            'agentStats' => $agentStats ?? null,
         ]);
     })->name('dashboard');
 
@@ -118,6 +138,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/usuarios/{usuario}/suspend', [UserController::class, 'suspend'])->name('usuarios.suspend');
         Route::patch('/usuarios/{usuario}/activate', [UserController::class, 'activate'])->name('usuarios.activate');
         Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+    });
+
+
+    // Agente — revisión y equipos
+    Route::middleware('role:agente,admin')->prefix('agente')->name('agente.')->group(function () {
+        Route::get('/revisiones/{bandeja}', [RevisionController::class, 'index'])
+            ->whereIn('bandeja', ['pendientes', 'validados', 'devueltos', 'historial'])
+            ->name('revisiones.index');
+        Route::get('/revisiones', fn() => redirect()->route('agente.revisiones.index', 'pendientes'));
+        Route::get('/documento/{tipo}/{id}', [RevisionController::class, 'show'])
+            ->whereIn('tipo', ['pedimento', 'cove', 'doda'])
+            ->name('revisiones.show');
+        Route::post('/documento/{tipo}/{id}/validar', [RevisionController::class, 'validar'])
+            ->whereIn('tipo', ['pedimento', 'cove', 'doda'])
+            ->name('revisiones.validar');
+        Route::post('/documento/{tipo}/{id}/devolver', [RevisionController::class, 'devolver'])
+            ->whereIn('tipo', ['pedimento', 'cove', 'doda'])
+            ->name('revisiones.devolver');
+
+        Route::get('/equipos', [EquipoGestionController::class, 'index'])->name('equipos.index');
+        Route::post('/equipos', [EquipoGestionController::class, 'store'])->name('equipos.store');
+        Route::get('/equipos/{equipo}', [EquipoGestionController::class, 'show'])->name('equipos.show');
+        Route::put('/equipos/{equipo}', [EquipoGestionController::class, 'update'])->name('equipos.update');
+        Route::delete('/equipos/{equipo}', [EquipoGestionController::class, 'destroy'])->name('equipos.destroy');
+        Route::post('/equipos/{equipo}/miembros', [EquipoGestionController::class, 'attachMember'])->name('equipos.attach');
+        Route::delete('/equipos/{equipo}/miembros/{user}', [EquipoGestionController::class, 'detachMember'])->name('equipos.detach');
     });
 
     // Capturista (+ admin/agente para supervisión)
