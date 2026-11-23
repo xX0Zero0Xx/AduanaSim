@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Process;
 
 class UsuariosDePrueba extends Seeder
 {
@@ -17,6 +19,7 @@ class UsuariosDePrueba extends Seeder
             'name' => 'Admin',
             'email' => 'admin@AduanaSim.local',
             'password' => bcrypt('Panecito123'),
+            //'password' => bcrypt(env('PASSWORD_ADMIN')),
             'rol' => 'admin'
         ]);
 
@@ -24,6 +27,7 @@ class UsuariosDePrueba extends Seeder
             'name' => 'agente',
             'email' => 'agente@AduanaSim.local',
             'password' => bcrypt('Panecito123'),
+            //'password' => bcrypt(env('PASSWORD_AGENTE')),
             'rol' => 'agente'
         ]);
 
@@ -31,6 +35,7 @@ class UsuariosDePrueba extends Seeder
             'name' => 'capturista',
             'email' => 'capturista@AduanaSim.local',
             'password' => bcrypt('Panecito123'),
+            //'password' => bcrypt(env('PASSWORD_CAPTURISTA')),
             'rol' => 'capturista'
         ]);
     }

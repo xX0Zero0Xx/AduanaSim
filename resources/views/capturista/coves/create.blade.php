@@ -3,7 +3,7 @@
         <section class="aduana-module-view">
             <div class="aduana-module-view__heading">
                 <div>
-                    <span class="aduana-eyebrow aduana-eyebrow--muted">Nuevo COVE</span>
+                    <span class="aduana-eyebrow aduana-eyebrow--muted">Nuevo Cove</span>
                     <h3>Captura de comprobante de valor</h3>
                 </div>
 

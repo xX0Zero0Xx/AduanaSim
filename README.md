@@ -44,5 +44,5 @@ DB_PASSWORD=
 php artisan migrate:fresh --seed
 
 # ejecutar script npm para correr el programa con vite
-npm run Prender
+npm run serve
 ```

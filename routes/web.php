@@ -126,6 +126,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('pedimentos', PedimentoController::class);
         Route::post('pedimentos/{pedimento}/enviar', [PedimentoController::class, 'enviar'])->name('pedimentos.enviar');
         Route::get('pedimentos/{pedimento}/pdf/{formato?}', [PedimentoController::class, 'pdf'])->name('pedimentos.pdf');
+        Route::get('coves/{cove}/pdf', [CoveController::class, 'pdf'])->name('coves.pdf');
+        Route::get('dodas/{doda}/pdf', [DodaController::class, 'pdf'])->name('dodas.pdf');
 
         Route::resource('coves', CoveController::class);
         Route::post('coves/{cove}/enviar', [CoveController::class, 'enviar'])->name('coves.enviar');
