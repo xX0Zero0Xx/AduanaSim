@@ -3,8 +3,8 @@
         <section class="aduana-module-view">
             <div class="aduana-module-view__heading">
                 <div>
-                    <span class="aduana-eyebrow aduana-eyebrow--muted">Nuevo DODA</span>
-                    <h3>Captura de DODA</h3>
+                    <span class="aduana-eyebrow aduana-eyebrow--muted">Nuevo Doda</span>
+                    <h3>Captura de Doda</h3>
                 </div>
 
 <!-- <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al panel</a> -->

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Doda;
 use App\Models\Pedimento;
 use Illuminate\Http\RedirectResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -156,6 +158,18 @@ class DodaController extends Controller
         ]);
 
         return back()->with('status', "DODA {$doda->folio} enviado a validación.");
+    }
+
+
+    public function pdf(Doda $doda): Response
+    {
+        $this->authorizeVisible($doda);
+        $doda->load(['pedimentos', 'user']);
+
+        $pdf = Pdf::loadView('pdf.doda', ['doda' => $doda])
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream("doda-{$doda->folio}.pdf");
     }
 
     private function validateDoda(Request $request): array

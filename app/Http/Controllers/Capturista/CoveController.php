@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Cove;
 use App\Models\Pedimento;
 use Illuminate\Http\RedirectResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -188,6 +190,18 @@ class CoveController extends Controller
         ]);
 
         return back()->with('status', "COVE {$cove->folio} enviado a validación.");
+    }
+
+
+    public function pdf(Cove $cove): Response
+    {
+        $this->authorizeVisible($cove);
+        $cove->load(['facturas', 'mercancias', 'pedimento', 'user']);
+
+        $pdf = Pdf::loadView('pdf.cove', ['cove' => $cove])
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream("cove-{$cove->folio}.pdf");
     }
 
     private function validateCove(Request $request): array

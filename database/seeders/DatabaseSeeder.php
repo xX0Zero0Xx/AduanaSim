@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UsuariosDePrueba::class,
             CatalogosCompletosSeeder::class,
+            PedimentoPrueba::class,
+            //departamentos::class
         ]);
     }
 }

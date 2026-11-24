@@ -4,260 +4,208 @@
     <meta charset="utf-8">
     <title>Pedimento {{ $pedimento->folio }} — Tradicional</title>
     <style>
-        @page { margin: 12mm 10mm; }
+        @page { margin: 8mm 8mm; }
         * { box-sizing: border-box; }
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 8px;
-            color: #000;
-            margin: 0;
-            position: relative;
+        body { font-family: DejaVu Sans, sans-serif; font-size: 7.5px; color: #0b1f33; margin: 0; }
+        .banner {
+            background: #0b1f33; color: #fff; text-align: center;
+            padding: 4px 6px; font-size: 7px; letter-spacing: 0.4px; margin-bottom: 4px;
         }
-        .watermark {
-            position: fixed;
-            top: 42%;
-            left: 8%;
-            width: 84%;
-            text-align: center;
-            font-size: 28px;
-            color: #c9c9c9;
-            transform: rotate(-28deg);
-            z-index: 0;
-            letter-spacing: 2px;
-            font-weight: bold;
-            opacity: 0.45;
+        .banner strong { color: #5eead4; }
+        table.box { width: 100%; border-collapse: collapse; margin-bottom: 3px; table-layout: fixed; }
+        table.box td, table.box th {
+            border: 1px solid #0b1f33; padding: 2px 3px; vertical-align: top;
         }
-        .content { position: relative; z-index: 1; }
-        .header {
-            border: 1.5px solid #000;
-            padding: 4px 6px;
-            margin-bottom: 4px;
+        .sec {
+            background: #0d9488; color: #fff; font-weight: bold; font-size: 7px;
+            text-transform: uppercase; letter-spacing: 0.3px; padding: 2px 4px;
+            border: 1px solid #0b1f33;
         }
-        .header-title {
-            text-align: center;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin: 0;
-        }
-        .header-sub {
-            text-align: center;
-            font-size: 7.5px;
-            margin: 2px 0 0;
-        }
-        .band {
-            background: #e8e8e8;
-            border: 1px solid #000;
-            border-bottom: none;
-            font-weight: bold;
-            font-size: 7.5px;
-            padding: 2px 4px;
-            text-transform: uppercase;
-        }
-        table.grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 4px;
-            table-layout: fixed;
-        }
-        table.grid th, table.grid td {
-            border: 1px solid #000;
-            padding: 2px 3px;
-            vertical-align: top;
-            word-wrap: break-word;
-        }
-        table.grid th {
-            background: #f0f0f0;
-            font-size: 6.5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: left;
-        }
-        .lbl {
-            display: block;
-            font-size: 6px;
-            color: #333;
-            text-transform: uppercase;
-            margin-bottom: 1px;
-        }
-        .val { font-size: 8px; font-weight: bold; min-height: 10px; }
+        .sec-light { background: #e6f7f5; color: #0b1f33; font-weight: bold; font-size: 6.5px; text-transform: uppercase; }
+        .lbl { display: block; font-size: 5.5px; color: #475569; text-transform: uppercase; margin-bottom: 1px; }
+        .val { font-size: 8px; font-weight: bold; color: #0b1f33; min-height: 9px; }
         .val-n { font-size: 8px; font-weight: bold; text-align: right; }
-        .tiny { font-size: 6.5px; }
-        .footer-leyenda {
-            margin-top: 10px;
-            border: 1.5px solid #000;
-            padding: 6px;
-            text-align: center;
-            font-size: 9px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            background: #fff;
-        }
-        .footer-meta {
-            margin-top: 4px;
-            text-align: center;
-            font-size: 6.5px;
-            color: #444;
-        }
-        .partidas th { text-align: center; font-size: 6px; }
-        .partidas td { font-size: 7px; }
-        .num { text-align: right; }
         .ctr { text-align: center; }
+        .num { text-align: right; }
+        .tiny { font-size: 6.5px; }
+        .head-row { width: 100%; border-collapse: collapse; margin-bottom: 3px; }
+        .head-row td { border: 1px solid #0b1f33; padding: 3px 4px; vertical-align: middle; }
+        .logo-cell { width: 18%; text-align: center; background: #f8fafc; }
+        .logo-cell img { height: 36px; }
+        .title-cell { width: 52%; text-align: center; }
+        .title-cell h1 { margin: 0; font-size: 13px; color: #0b1f33; letter-spacing: 1px; }
+        .title-cell .sub { font-size: 7px; color: #0d9488; font-weight: bold; margin-top: 2px; }
+        .meta-cell { width: 30%; font-size: 6.5px; }
+        .warn {
+            margin-top: 6px; border: 1.5px solid #0d9488; background: #f0fdfa;
+            padding: 5px; text-align: center; font-size: 8px; font-weight: bold; color: #0b1f33;
+        }
+        .foot { margin-top: 3px; text-align: center; font-size: 6px; color: #64748b; }
+        .barcode-sim {
+            font-family: DejaVu Sans Mono, monospace; font-size: 10px; letter-spacing: 1px;
+            border: 1px solid #0b1f33; padding: 3px; text-align: center; background: #fff;
+        }
+        .cert-box {
+            border: 2px solid #0d9488; text-align: center; padding: 8px 4px;
+            background: #f0fdfa; font-weight: bold; color: #0d9488; font-size: 8px;
+        }
     </style>
 </head>
 <body>
-    <div class="watermark">DOCUMENTO SIN VALOR JUDICIAL</div>
-
-    <div class="content">
-        <div class="header">
-            <p class="header-title">PEDIMENTO ADUANERO — FORMATO TRADICIONAL</p>
-            <p class="header-sub">
-                AduanaSim · Simulador académico · Folio {{ $pedimento->folio }}
-                · {{ strtoupper($pedimento->tipo_operacion ?? '') }}
-                · {{ now()->format('d/m/Y H:i') }}
-            </p>
-        </div>
-
-        {{-- Bloque identificación (Hoja 1 estilo) --}}
-        <div class="band">1. Identificación del pedimento</div>
-        <table class="grid">
-            <tr>
-                <td style="width:18%"><span class="lbl">Núm. pedimento</span><span class="val">{{ $pedimento->folio }}</span></td>
-                <td style="width:12%"><span class="lbl">T. operación</span><span class="val">{{ strtoupper(substr($pedimento->tipo_operacion ?? '', 0, 3)) }}</span></td>
-                <td style="width:12%"><span class="lbl">Cve. pedimento</span><span class="val">{{ $pedimento->clave_pedimento }}</span></td>
-                <td style="width:12%"><span class="lbl">Régimen</span><span class="val">{{ $pedimento->regimen_clave }}</span></td>
-                <td style="width:12%"><span class="lbl">Destino</span><span class="val">{{ $pedimento->destino_clave }}</span></td>
-                <td style="width:14%"><span class="lbl">Tipo de cambio</span><span class="val-n">{{ number_format((float)$pedimento->tipo_cambio, 4) }}</span></td>
-                <td style="width:20%"><span class="lbl">Peso bruto (kg)</span><span class="val-n">{{ number_format((float)$pedimento->peso_bruto, 3) }}</span></td>
-            </tr>
-            <tr>
-                <td><span class="lbl">Aduana</span><span class="val">{{ $pedimento->aduana_clave }}</span></td>
-                <td><span class="lbl">Sección</span><span class="val">{{ $pedimento->seccion_aduanera }}</span></td>
-                <td><span class="lbl">Patente</span><span class="val">{{ $pedimento->patente }}</span></td>
-                <td colspan="2"><span class="lbl">Medio transporte / entrada</span><span class="val">{{ $pedimento->medio_transporte_clave }} / {{ $pedimento->medio_entrada_clave }}</span></td>
-                <td><span class="lbl">Arribo</span><span class="val">{{ $pedimento->medio_arribo_clave }}</span></td>
-                <td><span class="lbl">Salida</span><span class="val">{{ $pedimento->medio_salida_clave }}</span></td>
-            </tr>
-        </table>
-
-        <div class="band">2. Datos del importador / exportador</div>
-        <table class="grid">
-            <tr>
-                <td style="width:22%"><span class="lbl">RFC</span><span class="val">{{ $pedimento->rfc_operador }}</span></td>
-                <td style="width:48%"><span class="lbl">Nombre / razón social</span><span class="val">{{ $pedimento->nombre_operador }}</span></td>
-                <td style="width:30%"><span class="lbl">CURP</span><span class="val">{{ $pedimento->curp_operador }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="3"><span class="lbl">Domicilio</span><span class="val">{{ $pedimento->domicilio_operador }}</span></td>
-            </tr>
-        </table>
-
-        <div class="band">3. Valores, incrementables y moneda</div>
-        <table class="grid">
-            <tr>
-                <td style="width:16%"><span class="lbl">Valor dólares</span><span class="val-n">{{ number_format((float)$pedimento->valor_dolares, 2) }}</span></td>
-                <td style="width:16%"><span class="lbl">Valor aduana</span><span class="val-n">{{ number_format((float)$pedimento->valor_aduana, 2) }}</span></td>
-                <td style="width:16%"><span class="lbl">Precio pagado</span><span class="val-n">{{ number_format((float)($pedimento->precio_pagado ?: $pedimento->valor_comercial), 2) }}</span></td>
-                <td style="width:16%"><span class="lbl">Valor comercial</span><span class="val-n">{{ number_format((float)$pedimento->valor_comercial, 2) }}</span></td>
-                <td style="width:12%"><span class="lbl">Moneda</span><span class="val">{{ $pedimento->moneda_clave }}</span></td>
-                <td style="width:12%"><span class="lbl">Incoterm</span><span class="val">{{ $pedimento->incoterm_clave }}</span></td>
-                <td style="width:12%"><span class="lbl">País origen</span><span class="val">{{ $pedimento->pais_origen_clave }}</span></td>
-            </tr>
-            <tr>
-                <td><span class="lbl">Val. seguros</span><span class="val-n">{{ number_format((float)$pedimento->val_seguros, 2) }}</span></td>
-                <td><span class="lbl">Seguros</span><span class="val-n">{{ number_format((float)$pedimento->seguros, 2) }}</span></td>
-                <td><span class="lbl">Fletes</span><span class="val-n">{{ number_format((float)$pedimento->fletes, 2) }}</span></td>
-                <td><span class="lbl">Embalajes</span><span class="val-n">{{ number_format((float)$pedimento->embalajes, 2) }}</span></td>
-                <td colspan="2"><span class="lbl">Otros incrementables</span><span class="val-n">{{ number_format((float)$pedimento->otros_incrementables, 2) }}</span></td>
-                <td><span class="lbl">País destino</span><span class="val">{{ $pedimento->pais_destino_clave }}</span></td>
-            </tr>
-        </table>
-
-        <div class="band">4. Códigos, bultos y proveedor / comprador</div>
-        <table class="grid">
-            <tr>
-                <td style="width:25%"><span class="lbl">Código de aceptación</span><span class="val">{{ $pedimento->codigo_aceptacion }}</span></td>
-                <td style="width:25%"><span class="lbl">Código de barras</span><span class="val">{{ $pedimento->codigo_barras_pedimento }}</span></td>
-                <td style="width:30%"><span class="lbl">Marcas de bultos</span><span class="val">{{ $pedimento->marcas_bultos }}</span></td>
-                <td style="width:20%"><span class="lbl">Total bultos</span><span class="val-n">{{ $pedimento->total_bultos }}</span></td>
-            </tr>
-            <tr>
-                <td><span class="lbl">ID fiscal proveedor</span><span class="val">{{ $pedimento->proveedor_id_fiscal }}</span></td>
-                <td colspan="2"><span class="lbl">Nombre proveedor / comprador</span><span class="val">{{ $pedimento->proveedor_nombre }}</span></td>
-                <td><span class="lbl">Vinculación</span><span class="val">{{ $pedimento->vinculacion }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="4"><span class="lbl">Domicilio proveedor</span><span class="val">{{ $pedimento->proveedor_domicilio }}</span></td>
-            </tr>
-        </table>
-
-        <div class="band">5. CFDI / documento de valor y agente aduanal</div>
-        <table class="grid">
-            <tr>
-                <td style="width:18%"><span class="lbl">CFDI / factura</span><span class="val">{{ $pedimento->cfdi_numero }}</span></td>
-                <td style="width:14%"><span class="lbl">Fecha</span><span class="val">{{ optional($pedimento->cfdi_fecha)->format('d/m/Y') }}</span></td>
-                <td style="width:16%"><span class="lbl">Valor moneda</span><span class="val-n">{{ number_format((float)$pedimento->cfdi_valor_moneda, 2) }}</span></td>
-                <td style="width:14%"><span class="lbl">Factor</span><span class="val-n">{{ number_format((float)$pedimento->cfdi_factor_moneda, 6) }}</span></td>
-                <td style="width:16%"><span class="lbl">Valor USD</span><span class="val-n">{{ number_format((float)$pedimento->cfdi_valor_dolares, 2) }}</span></td>
-                <td style="width:22%"><span class="lbl">Patente agente</span><span class="val">{{ $pedimento->agente_patente }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="3"><span class="lbl">Nombre agente</span><span class="val">{{ $pedimento->agente_nombre }}</span></td>
-                <td colspan="2"><span class="lbl">RFC agente</span><span class="val">{{ $pedimento->agente_rfc }}</span></td>
-                <td><span class="lbl">CURP agente</span><span class="val">{{ $pedimento->agente_curp }}</span></td>
-            </tr>
-        </table>
-
-        <div class="band">6. Partidas / mercancías</div>
-        <table class="grid partidas">
-            <thead>
-                <tr>
-                    <th style="width:4%">Seq</th>
-                    <th style="width:10%">Fracción</th>
-                    <th style="width:4%">NICO</th>
-                    <th style="width:28%">Descripción</th>
-                    <th style="width:8%">Cant.</th>
-                    <th style="width:6%">UM</th>
-                    <th style="width:10%">V. comercial</th>
-                    <th style="width:10%">V. aduana</th>
-                    <th style="width:8%">P. unit.</th>
-                    <th style="width:6%">P. orig.</th>
-                    <th style="width:6%">Mét.</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($pedimento->partidas as $p)
-                    <tr>
-                        <td class="ctr">{{ $p->secuencia }}</td>
-                        <td class="ctr">{{ $p->fraccion }}</td>
-                        <td class="ctr">{{ $p->nico }}</td>
-                        <td class="tiny">{{ $p->descripcion }}@if($p->marca) · {{ $p->marca }} {{ $p->modelo }}@endif</td>
-                        <td class="num">{{ number_format((float)$p->cantidad, 3) }}</td>
-                        <td class="ctr">{{ $p->unidad ?: $p->umc }}</td>
-                        <td class="num">{{ number_format((float)$p->valor_comercial, 2) }}</td>
-                        <td class="num">{{ number_format((float)$p->valor_aduana, 2) }}</td>
-                        <td class="num">{{ number_format((float)$p->precio_unitario, 4) }}</td>
-                        <td class="ctr">{{ $p->pais_origen_clave }}</td>
-                        <td class="ctr">{{ $p->metodo_valoracion }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="11" class="ctr tiny">Sin partidas capturadas</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-
-        @if ($pedimento->observaciones)
-            <div class="band">7. Observaciones</div>
-            <table class="grid">
-                <tr><td class="tiny">{{ $pedimento->observaciones }}</td></tr>
-            </table>
-        @endif
-
-        <div class="footer-leyenda">DOCUMENTO SIN VALOR JUDICIAL</div>
-        <div class="footer-meta">
-            Simulación académica AduanaSim · No constituye pedimento oficial ni produce efectos ante la autoridad aduanera ·
-            Estatus: {{ $pedimento->etiquetaEstatus() }} · Generado {{ now()->format('d/m/Y H:i:s') }}
-        </div>
+    <div class="banner">
+        SIMULADOR ACADÉMICO ADUANASIM — <strong>DOCUMENTO DE PRUEBA, SIN VALIDEZ OFICIAL NI PARA PAGO</strong>
     </div>
+
+    <table class="head-row">
+        <tr>
+            <td class="logo-cell">
+                @php $logo = public_path('images/aduanasim-logo1.png'); @endphp
+                @if (file_exists($logo))
+                    <img src="{{ $logo }}" alt="AduanaSim">
+                @else
+                    <strong style="color:#0d9488;font-size:11px">ADUANASIM</strong>
+                @endif
+            </td>
+            <td class="title-cell">
+                <h1>PEDIMENTO</h1>
+                <div class="sub">FORMATO TRADICIONAL · SIMULACIÓN ACADÉMICA</div>
+            </td>
+            <td class="meta-cell">
+                <span class="lbl">Referencia AduanaSim</span>
+                <span class="val">{{ $pedimento->folio }}</span>
+                <span class="lbl" style="margin-top:3px">Página</span>
+                <span class="val">1 de 1</span>
+            </td>
+        </tr>
+    </table>
+
+    <table class="box">
+        <tr>
+            <td style="width:22%"><span class="lbl">Núm. pedimento</span><span class="val">{{ $pedimento->folio }}</span></td>
+            <td style="width:10%"><span class="lbl">T. oper.</span><span class="val">{{ strtoupper(substr($pedimento->tipo_operacion ?? 'IMP', 0, 3)) }}</span></td>
+            <td style="width:12%"><span class="lbl">Cve. pedimento</span><span class="val">{{ $pedimento->clave_pedimento }}</span></td>
+            <td style="width:12%"><span class="lbl">Régimen</span><span class="val">{{ $pedimento->regimen_clave }}</span></td>
+            <td style="width:12%"><span class="lbl">Destino/origen</span><span class="val">{{ $pedimento->destino_clave }}</span></td>
+            <td style="width:14%"><span class="lbl">Tipo cambio</span><span class="val-n">{{ number_format((float)$pedimento->tipo_cambio, 5) }}</span></td>
+            <td style="width:18%"><span class="lbl">Peso bruto / Aduana E/S</span><span class="val">{{ number_format((float)$pedimento->peso_bruto, 3) }} · {{ $pedimento->aduana_clave }}</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="lbl">Medios de transporte</span><span class="val">ENTRADA: {{ $pedimento->medio_entrada_clave ?: $pedimento->medio_transporte_clave }} &nbsp; ARRIBO: {{ $pedimento->medio_arribo_clave }} &nbsp; SALIDA: {{ $pedimento->medio_salida_clave }}</span></td>
+            <td colspan="2"><span class="lbl">Valor dólares</span><span class="val-n">{{ number_format((float)$pedimento->valor_dolares, 2) }}</span></td>
+            <td><span class="lbl">Precio pagado / comercial</span><span class="val-n">{{ number_format((float)($pedimento->precio_pagado ?: $pedimento->valor_comercial), 2) }}</span></td>
+            <td><span class="lbl">Valor aduana</span><span class="val-n">{{ number_format((float)$pedimento->valor_aduana, 2) }}</span></td>
+        </tr>
+    </table>
+
+    <div class="sec">Datos del importador / exportador</div>
+    <table class="box">
+        <tr>
+            <td style="width:22%"><span class="lbl">RFC</span><span class="val">{{ $pedimento->rfc_operador }}</span></td>
+            <td style="width:48%"><span class="lbl">Nombre, denominación o razón social</span><span class="val">{{ $pedimento->nombre_operador }}</span></td>
+            <td style="width:30%"><span class="lbl">CURP</span><span class="val">{{ $pedimento->curp_operador }}</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="lbl">Domicilio</span><span class="val">{{ $pedimento->domicilio_operador }}</span></td>
+        </tr>
+    </table>
+
+    <table class="box">
+        <tr class="sec-light">
+            <td colspan="5" class="ctr">Incrementables</td>
+            <td colspan="5" class="ctr">Valores decrementables</td>
+        </tr>
+        <tr>
+            <td><span class="lbl">Val. seguros</span><span class="val-n">{{ number_format((float)$pedimento->val_seguros, 2) }}</span></td>
+            <td><span class="lbl">Seguros</span><span class="val-n">{{ number_format((float)$pedimento->seguros, 2) }}</span></td>
+            <td><span class="lbl">Fletes</span><span class="val-n">{{ number_format((float)$pedimento->fletes, 2) }}</span></td>
+            <td><span class="lbl">Embalajes</span><span class="val-n">{{ number_format((float)$pedimento->embalajes, 2) }}</span></td>
+            <td><span class="lbl">Otros</span><span class="val-n">{{ number_format((float)$pedimento->otros_incrementables, 2) }}</span></td>
+            <td><span class="lbl">Transporte</span><span class="val-n">0.00</span></td>
+            <td><span class="lbl">Seguro</span><span class="val-n">0.00</span></td>
+            <td><span class="lbl">Carga</span><span class="val-n">0.00</span></td>
+            <td><span class="lbl">Descarga</span><span class="val-n">0.00</span></td>
+            <td><span class="lbl">Otros</span><span class="val-n">0.00</span></td>
+        </tr>
+    </table>
+
+    <table class="box">
+        <tr>
+            <td style="width:22%"><span class="lbl">Código de aceptación simulado</span>
+                <div class="barcode-sim">{{ $pedimento->codigo_aceptacion ?: 'SIM'.strtoupper(substr(md5($pedimento->folio),0,6)) }}</div>
+            </td>
+            <td style="width:22%"><span class="lbl">Código de barras simulado</span>
+                <div class="barcode-sim">Ped. {{ substr(preg_replace('/\D/','',$pedimento->folio).'0000000', -7) }}</div>
+            </td>
+            <td style="width:36%"><span class="lbl">Sección aduanera de despacho</span><span class="val">{{ $pedimento->aduana_clave }} {{ $pedimento->seccion_aduanera ? '/ '.$pedimento->seccion_aduanera : '' }}</span></td>
+            <td style="width:20%"><span class="lbl">Total de bultos</span><span class="val">{{ $pedimento->total_bultos ?: '—' }} · {{ $pedimento->marcas_bultos }}</span></td>
+        </tr>
+    </table>
+
+    <div class="sec">Datos del proveedor o comprador</div>
+    <table class="box">
+        <tr>
+            <td style="width:20%"><span class="lbl">ID. fiscal</span><span class="val">{{ $pedimento->proveedor_id_fiscal }}</span></td>
+            <td style="width:40%"><span class="lbl">Nombre o razón social</span><span class="val">{{ $pedimento->proveedor_nombre }}</span></td>
+            <td style="width:25%"><span class="lbl">Domicilio</span><span class="val">{{ $pedimento->proveedor_domicilio }}</span></td>
+            <td style="width:15%"><span class="lbl">Vinc / Met</span><span class="val">{{ $pedimento->vinculacion }} / —</span></td>
+        </tr>
+        <tr>
+            <td><span class="lbl">Núm. factura / documento</span><span class="val">{{ $pedimento->cfdi_numero }}</span></td>
+            <td><span class="lbl">Fecha / Incoterm / Moneda</span><span class="val">{{ optional($pedimento->cfdi_fecha)->format('Y-m-d') }} | {{ $pedimento->incoterm_clave }} | {{ $pedimento->moneda_clave }}</span></td>
+            <td colspan="2"><span class="lbl">Valor dólares factura</span><span class="val-n">{{ number_format((float)$pedimento->cfdi_valor_dolares, 2) }}</span></td>
+        </tr>
+    </table>
+
+    <div class="sec">Partidas arancelarias</div>
+    <table class="box">
+        <tr class="sec-light">
+            <td class="ctr" style="width:4%">No.</td>
+            <td class="ctr" style="width:11%">Fracción</td>
+            <td class="ctr" style="width:5%">NICO</td>
+            <td style="width:30%">Descripción</td>
+            <td class="ctr" style="width:9%">Cantidad</td>
+            <td class="ctr" style="width:6%">UM</td>
+            <td class="ctr" style="width:11%">V. unitario</td>
+            <td class="ctr" style="width:12%">V. comercial</td>
+            <td class="ctr" style="width:12%">V. aduana</td>
+        </tr>
+        @forelse($pedimento->partidas as $p)
+            <tr>
+                <td class="ctr">{{ $p->secuencia }}</td>
+                <td class="ctr">{{ $p->fraccion }}</td>
+                <td class="ctr">{{ $p->nico }}</td>
+                <td class="tiny">{{ $p->descripcion }}</td>
+                <td class="num">{{ number_format((float)$p->cantidad, 4) }}</td>
+                <td class="ctr">{{ $p->unidad ?: $p->umc }}</td>
+                <td class="num">{{ number_format((float)$p->precio_unitario, 2) }}</td>
+                <td class="num">{{ number_format((float)$p->valor_comercial, 2) }}</td>
+                <td class="num">{{ number_format((float)$p->valor_aduana, 2) }}</td>
+            </tr>
+        @empty
+            <tr><td colspan="9" class="ctr tiny">Sin partidas capturadas</td></tr>
+        @endforelse
+    </table>
+
+    <table class="box">
+        <tr>
+            <td style="width:55%">
+                <span class="lbl">Agente aduanal / agencia</span>
+                <span class="val">{{ $pedimento->agente_nombre }} · RFC: {{ $pedimento->agente_rfc }} · Patente: {{ $pedimento->agente_patente ?: $pedimento->patente }}</span>
+            </td>
+            <td style="width:20%" class="cert-box">CERTIFICACIONES<br><span style="font-size:7px;color:#0b1f33">SIMULACIÓN ACADÉMICA</span></td>
+            <td style="width:25%">
+                <span class="lbl">Estatus</span><span class="val">{{ $pedimento->etiquetaEstatus() }}</span>
+                <span class="lbl">Capturista</span><span class="val">{{ $pedimento->user->name ?? '—' }}</span>
+            </td>
+        </tr>
+    </table>
+
+    @if($pedimento->observaciones)
+        <div class="sec">Observaciones</div>
+        <table class="box"><tr><td class="tiny">{{ $pedimento->observaciones }}</td></tr></table>
+    @endif
+
+    <div class="warn">DOCUMENTO SIN VALOR JUDICIAL — Solo fines académicos · No constituye pedimento oficial ni acredita pago</div>
+    <div class="foot">AduanaSim · Generado {{ now()->format('d/m/Y H:i:s') }} · Folio {{ $pedimento->folio }}</div>
 </body>
 </html>

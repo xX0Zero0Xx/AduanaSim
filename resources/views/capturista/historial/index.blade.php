@@ -5,17 +5,17 @@
                 <div>
                     <span class="aduana-eyebrow aduana-eyebrow--muted">Historial</span>
                     <h3>Mis documentos</h3>
-                    <p>Consulta pedimentos, COVE y DODA propios o de tu equipo.</p>
+                    <p>Consulta Pedimentos, Cove y Doda propios o de tu equipo.</p>
                 </div>
-                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Panel</a>
+                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al Panel</a>
             </div>
 
             <form method="GET" class="aduana-filter-bar">
                 <select name="tipo" class="aduana-input">
                     <option value="todos" @selected($tipo==='todos')>Todos</option>
                     <option value="pedimento" @selected($tipo==='pedimento')>Pedimentos</option>
-                    <option value="cove" @selected($tipo==='cove')>COVE</option>
-                    <option value="doda" @selected($tipo==='doda')>DODA</option>
+                    <option value="cove" @selected($tipo==='cove')>Cove</option>
+                    <option value="doda" @selected($tipo==='doda')>Doda</option>
                 </select>
                 <select name="estatus" class="aduana-input">
                     <option value="">Cualquier estatus</option>
@@ -23,7 +23,7 @@
                         <option value="{{ $e }}" @selected($estatus===$e)>{{ ucfirst($e) }}</option>
                     @endforeach
                 </select>
-                <button class="aduana-btn" type="submit">Filtrar</button>
+                <!-- <button class="aduana-btn" type="submit">Filtrar</button> -->
             </form>
 
             @if ($items->isEmpty())

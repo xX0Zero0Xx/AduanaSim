@@ -1,4 +1,3 @@
-
 @php
     $rol = in_array($user->rol ?? null, ['admin', 'agente', 'capturista'], true)
         ? $user->rol
@@ -14,7 +13,7 @@
                 ['id' => 'modulos', 'label' => 'Módulos', 'icon' => '▦'],
                 ['id' => 'catalogos', 'label' => 'Catálogos', 'icon' => '▤'],
                 ['id' => 'auditoria', 'label' => 'Actividad', 'icon' => '◷'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
             ],
         ],
 
@@ -24,11 +23,11 @@
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
                 ['id' => 'pendientes', 'label' => 'Por revisar', 'icon' => '◷'],
-                ['id' => 'validados', 'label' => 'Validados', 'icon' => '✓'],
-                ['id' => 'devueltos', 'label' => 'No validados', 'icon' => '↶'],
+                //['id' => 'validados', 'label' => 'Estatus de validación', 'icon' => '✓'],
+                ['id' => 'usuarios', 'label' => 'Usuarios', 'icon' => '♙'],
                 ['id' => 'historial', 'label' => 'Historial', 'icon' => '▤'],
                 ['id' => 'equipos', 'label' => 'Equipos', 'icon' => '♧'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
             ],
         ],
 
@@ -42,8 +41,7 @@
                 ['id' => 'doda', 'label' => 'Doda', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
-                ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
             ],
         ],
     ];
@@ -52,7 +50,14 @@
 @endphp
 
 <x-app-layout>
-    <div class="aduana-dashboard" x-data="{ tab: 'inicio' }">
+    @php
+        $tabInicial = request('tab', 'inicio');
+        $tabsValidas = collect($panel['tabs'])->pluck('id')->all();
+        if (! in_array($tabInicial, $tabsValidas, true)) {
+            $tabInicial = 'inicio';
+        }
+    @endphp
+    <div class="aduana-dashboard" x-data="{ tab: '{{ $tabInicial }}' }">
 
         <section class="aduana-welcome aduana-welcome--role">
             <div class="aduana-welcome__copy">
@@ -68,11 +73,6 @@
                     <span>Bienvenido, {{ $user->name }}</span>
                 </div>
             </div>
-
-            <!--- <div class="aduana-welcome__mark" aria-hidden="true">
-                <img src="{{ asset('images/aduanasim-logo.png') }}" alt="">
-            </div> -->
-            
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -188,39 +188,43 @@
                 {{-- AGENTE --}}
                 @elseif ($rol === 'agente')
 
+                    @php
+                        $deps = $agentDepartamentos ?? collect();
+                        $s = $agentStats ?? ['pendientes' => 0, 'validados' => 0, 'devueltos' => 0];
+                    @endphp
+
                     @foreach ([
                         'pendientes' => [
-                            'Documentos por revisar',
-                            'Documentos que los capturistas han enviado para validación.',
-                            'clipboard-check',
-                            'No hay documentos pendientes de revisión.'
+                            'title' => 'Por revisar',
+                            'desc' => 'Elige un departamento para ver solo sus documentos pendientes de revisión.',
+                            'mode' => 'revisiones',
+                            'bandeja' => 'pendientes',
                         ],
                         'validados' => [
-                            'Documentos validados',
-                            'Consulta los documentos que ya recibieron una validación académica.',
-                            'badge-check',
-                            'No hay documentos validados.'
+                            'title' => 'Estatus de validación',
+                            'desc' => 'Elige un departamento para consultar documentos validados o devueltos.',
+                            'mode' => 'estatus',
+                            'bandeja' => 'historial',
                         ],
-                        'devueltos' => [
-                            'Documentos no validados',
-                            'Documentos devueltos con observaciones para su corrección.',
-                            'message-square-warning',
-                            'No hay documentos devueltos.'
+                        'usuarios' => [
+                            'title' => 'Usuarios capturista',
+                            'desc' => 'Elige un departamento para ver o administrar sus capturistas.',
+                            'mode' => 'usuarios',
+                            'bandeja' => null,
                         ],
                         'historial' => [
-                            'Historial de revisiones',
-                            'Consulta las revisiones realizadas y filtra por capturista o tipo de documento.',
-                            'history',
-                            'No hay revisiones registradas.'
+                            'title' => 'Historial de revisiones',
+                            'desc' => 'Vista rápida de documentos validados o devueltos (todos los departamentos).',
+                            'mode' => 'historial_inline',
+                            'bandeja' => null,
                         ],
                         'equipos' => [
-                            'Gestión de equipos',
-                            'Crea equipos de trabajo, incorpora capturistas y organiza la colaboración entre grupos.',
-                            'users-round',
-                            'Todavía no hay equipos registrados. Puedes crear tu primer equipo.'
+                            'title' => 'Equipos',
+                            'desc' => 'Crea un nuevo equipo de trabajo o consulta los equipos existentes.',
+                            'mode' => 'equipos_menu',
+                            'bandeja' => null,
                         ],
                     ] as $key => $data)
-
                         <div
                             x-cloak
                             x-show="tab === '{{ $key }}'"
@@ -230,17 +234,97 @@
                             aria-labelledby="tab-{{ $key }}"
                             tabindex="0"
                         >
-                            @include('dashboard.partials.estado-vacio', [
-                                'titulo' => $data[0],
-                                'descripcion' => $data[1],
-                                'icono' => $data[2],
-                                'mensaje' => $data[3]
-                            ])
-                        </div>
+                            <div class="aduana-module-view">
+                                <div class="aduana-module-view__heading">
+                                    <div>
+                                        <span class="aduana-eyebrow aduana-eyebrow--muted">Agente</span>
+                                        <h3>{{ $data['title'] }}</h3>
+                                        <p>{{ $data['desc'] }}</p>
+                                    </div>
+                                </div>
 
+                                @if ($data['mode'] === 'equipos_menu')
+                                    <div class="aduana-choice-grid">
+                                        <a href="{{ route('agente.equipos.create') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Crear equipo</h4>
+                                            <p>Abre la vista para registrar un equipo nuevo y ver un listado breve de los equipos existentes.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+
+                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Ver equipos</h4>
+                                            <p>Consulta todos los equipos agrupados y entra a administrar sus integrantes.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+                                    </div>
+                                @elseif ($data['mode'] === 'historial_inline')
+                                    @php $hist = $agentHistorial ?? collect(); @endphp
+                                    @if ($hist->isEmpty())
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">▤</div>
+                                            <strong>Sin revisiones aún</strong>
+                                            <p>Los documentos validados o devueltos aparecerán aquí.</p>
+                                        </div>
+                                    @else
+                                        <div class="aduana-table-wrap">
+                                            <table class="aduana-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo</th>
+                                                        <th>Departamento</th>
+                                                        <th>Propietario</th>
+                                                        <th>Estatus</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($hist as $item)
+                                                        <tr>
+                                                            <td>{{ $item['tipo'] }} <small class="text-slate-500">{{ $item['folio'] }}</small></td>
+                                                            <td>{{ $item['departamento'] }}</td>
+                                                            <td>{{ $item['capturista'] }}</td>
+                                                            <td>@include('agente.partials.estatus-badge', ['estatus' => $item['estatus'], 'etiqueta' => $item['etiqueta']])</td>
+                                                            <td><a class="aduana-link" href="{{ $item['url'] }}">Ver</a></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
+                                @else
+                                    @if ($deps->isEmpty())
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">♙</div>
+                                            <strong>Sin departamentos</strong>
+                                            <p>Crea un departamento en la pestaña Usuarios para poder filtrar.</p>
+                                            <a href="{{ route('agente.usuarios.index') }}" class="aduana-btn aduana-btn--primary mt-3">Ir a Usuarios</a>
+                                        </div>
+                                    @else
+                                        <div class="aduana-choice-grid">
+                                            @foreach ($deps as $dep)
+                                                @php
+                                                    if ($data['mode'] === 'revisiones') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => $data['bandeja'], 'departamento_id' => $dep->id]);
+                                                    } elseif ($data['mode'] === 'estatus') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => 'historial', 'departamento_id' => $dep->id]);
+                                                    } else {
+                                                        $href = route('agente.usuarios.index', ['departamento_id' => $dep->id]);
+                                                    }
+                                                @endphp
+                                                <a href="{{ $href }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                                    <span class="aduana-module-card__kicker">DEPARTAMENTO</span>
+                                                    <h4>{{ $dep->clave }}</h4>
+                                                    <p>{{ $dep->nombre }}@if($dep->descripcion) — {{ $dep->descripcion }}@endif</p>
+                                                    <span class="aduana-status">Filtrar</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
                     @endforeach
 
-                
 {{-- CAPTURISTA --}}
 @else
 
@@ -484,21 +568,22 @@
 
 @endif
 
-
-                {{-- PERFIL --}}
-                <div
-                    x-cloak
-                    x-show="tab === 'perfil'"
-                    x-transition.opacity
-                    role="tabpanel"
-                    id="panel-perfil"
-                    aria-labelledby="tab-perfil"
-                    tabindex="0"
-                >
-                    @include('profile.partials.show-information-from', [
-                        'user' => $user
-                    ])
-                </div>
+                {{-- PERFIL (solo admin y agente) --}}
+                @if ($rol !== 'capturista')
+                    <div
+                        x-cloak
+                        x-show="tab === 'perfil'"
+                        x-transition.opacity
+                        role="tabpanel"
+                        id="panel-perfil"
+                        aria-labelledby="tab-perfil"
+                        tabindex="0"
+                    >
+                        @include('profile.partials.show-information-from', [
+                            'user' => $user
+                        ])
+                    </div>
+                @endif
 
             </div>
         </section>
