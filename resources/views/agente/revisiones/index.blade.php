@@ -13,7 +13,7 @@
                         @endif
                     </p>
                 </div>
-                <a href="{{ route('dashboard', ['tab' => $bandeja === 'historial' ? 'historial' : ($bandeja === 'validados' ? 'validados' : 'pendientes')]) }}" class="aduana-btn aduana-btn--ghost">← Panel</a>
+                <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
             </div>
 
             @if (session('status'))
@@ -32,8 +32,8 @@
                 <select name="tipo" class="aduana-input">
                     <option value="todos" @selected($tipo==='todos')>Todos los tipos</option>
                     <option value="pedimento" @selected($tipo==='pedimento')>Pedimentos</option>
-                    <option value="cove" @selected($tipo==='cove')>COVE</option>
-                    <option value="doda" @selected($tipo==='doda')>DODA</option>
+                    <option value="cove" @selected($tipo==='cove')>Cove</option>
+                    <option value="doda" @selected($tipo==='doda')>Doda</option>
                 </select>
                 <button class="aduana-btn" type="submit">Filtrar</button>
             </form>

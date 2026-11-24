@@ -1,4 +1,3 @@
-
 @php
     $rol = in_array($user->rol ?? null, ['admin', 'agente', 'capturista'], true)
         ? $user->rol
@@ -75,10 +74,6 @@
                     <span>Bienvenido, {{ $user->name }}</span>
                 </div>
             </div>
-
-            <!--- <div class="aduana-welcome__mark" aria-hidden="true">
-                <img src="{{ asset('images/aduanasim-logo.png') }}" alt="">
-            </div> -->
         </section>
 
         <section class="aduana-workspace" aria-label="Espacio de trabajo">
@@ -225,9 +220,9 @@
                             'bandeja' => null,
                         ],
                         'equipos' => [
-                            'title' => 'Gestión de equipos',
-                            'desc' => 'Elige un departamento para ver equipos con capturistas de ese departamento.',
-                            'mode' => 'equipos',
+                            'title' => 'Equipos',
+                            'desc' => 'Crea un nuevo equipo de trabajo o consulta los equipos existentes.',
+                            'mode' => 'equipos_menu',
                             'bandeja' => null,
                         ],
                     ] as $key => $data)
@@ -249,7 +244,21 @@
                                     </div>
                                 </div>
 
-                                @if ($data['mode'] === 'historial_inline')
+                                @if ($data['mode'] === 'equipos_menu')
+                                    <div class="aduana-choice-grid">
+                                        <a href="{{ route('agente.equipos.create') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Crear equipo</h4>
+                                            <p>Abre la vista para registrar un equipo nuevo y ver un listado breve de los equipos existentes.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+
+                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                            <h4>Ver equipos</h4>
+                                            <p>Consulta todos los equipos agrupados y entra a administrar sus integrantes.</p>
+                                            <span class="aduana-status">Disponible</span>
+                                        </a>
+                                    </div>
+                                @elseif ($data['mode'] === 'historial_inline')
                                     @php $hist = $agentHistorial ?? collect(); @endphp
                                     @if ($hist->isEmpty())
                                         <div class="aduana-empty-state">
@@ -299,8 +308,6 @@
                                                         $href = route('agente.revisiones.index', ['bandeja' => $data['bandeja'], 'departamento_id' => $dep->id]);
                                                     } elseif ($data['mode'] === 'estatus') {
                                                         $href = route('agente.revisiones.index', ['bandeja' => 'historial', 'departamento_id' => $dep->id]);
-                                                    } elseif ($data['mode'] === 'equipos') {
-                                                        $href = route('agente.equipos.index', ['departamento_id' => $dep->id]);
                                                     } else {
                                                         $href = route('agente.usuarios.index', ['departamento_id' => $dep->id]);
                                                     }

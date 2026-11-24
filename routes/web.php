@@ -190,6 +190,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('revisiones.devolver');
 
         Route::get('/equipos', [EquipoGestionController::class, 'index'])->name('equipos.index');
+        Route::get('/equipos/crear', [EquipoGestionController::class, 'create'])->name('equipos.create');
         Route::post('/equipos', [EquipoGestionController::class, 'store'])->name('equipos.store');
         Route::get('/equipos/{equipo}', [EquipoGestionController::class, 'show'])->name('equipos.show');
         Route::put('/equipos/{equipo}', [EquipoGestionController::class, 'update'])->name('equipos.update');

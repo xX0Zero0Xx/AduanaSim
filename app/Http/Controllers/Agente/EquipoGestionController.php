@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agente;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cove;
+use App\Models\Departamento;
 use App\Models\Doda;
 use App\Models\Equipo;
 use App\Models\Pedimento;
@@ -14,14 +15,37 @@ use Illuminate\View\View;
 
 class EquipoGestionController extends Controller
 {
-    public function index(\Illuminate\Http\Request $request): View
+    public function create(): View
+    {
+        $equiposExistentes = Equipo::with(['users.departamento'])
+            ->orderBy('nombre')
+            ->get()
+            ->map(function ($equipo) {
+                $departamentos = $equipo->users
+                    ->map(fn($u) => $u->departamento?->clave ?? $u->departamento?->nombre)
+                    ->filter()
+                    ->unique()
+                    ->values();
+
+                return [
+                    'nombre' => $equipo->nombre,
+                    'departamento' => $departamentos->isNotEmpty() ? $departamentos->implode(', ') : 'Sin departamento',
+                ];
+            });
+
+        return view('agente.equipos.create', compact('equiposExistentes'));
+    }
+
+    public function index(Request $request): View
     {
         $departamentoId = $request->get('departamento_id');
 
-        $equipos = Equipo::with(['users' => fn ($q) => $q->orderBy('name')])
+        $equipos = Equipo::with([
+            'users' => fn($q) => $q->orderBy('name'),
+            'users.departamento' => fn($q) => $q->orderBy('nombre'),
+        ])
             ->when($departamentoId, function ($q) use ($departamentoId) {
-                // Equipos que tienen al menos un miembro del departamento
-                $q->whereHas('users', fn ($u) => $u->where('departamento_id', $departamentoId));
+                $q->whereHas('users', fn($u) => $u->where('departamento_id', $departamentoId));
             })
             ->orderBy('nombre')
             ->get();
@@ -36,11 +60,30 @@ class EquipoGestionController extends Controller
             ];
         }
 
+        // Agrupar equipos por departamento (si tienen miembros de distintos departamentos, aparecen en cada grupo)
+        $gruposEquipos = collect();
+        foreach ($equipos as $equipo) {
+            $deps = $equipo->users
+                ->map(fn($u) => $u->departamento)
+                ->filter()
+                ->unique('id');
+
+            if ($deps->isEmpty()) {
+                $claveGrupo = 'Sin departamento';
+                $gruposEquipos[$claveGrupo] = ($gruposEquipos[$claveGrupo] ?? collect())->push($equipo);
+            } else {
+                foreach ($deps as $dep) {
+                    $claveGrupo = $dep->clave ? "{$dep->clave} — {$dep->nombre}" : $dep->nombre;
+                    $gruposEquipos[$claveGrupo] = ($gruposEquipos[$claveGrupo] ?? collect())->push($equipo);
+                }
+            }
+        }
+
         $departamento = $departamentoId
-            ? \App\Models\Departamento::find($departamentoId)
+            ? Departamento::find($departamentoId)
             : null;
 
-        return view('agente.equipos.index', compact('equipos', 'stats', 'departamento'));
+        return view('agente.equipos.index', compact('equipos', 'gruposEquipos', 'stats', 'departamento'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -63,7 +106,7 @@ class EquipoGestionController extends Controller
 
     public function show(Equipo $equipo): View
     {
-        $equipo->load(['users' => fn ($q) => $q->orderBy('name')]);
+        $equipo->load(['users' => fn($q) => $q->orderBy('name')]);
 
         $capturistas = User::query()
             ->where('rol', 'capturista')
