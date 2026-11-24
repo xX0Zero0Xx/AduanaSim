@@ -108,7 +108,12 @@ class EquipoGestionController extends Controller
     {
         $equipo->load(['users' => fn($q) => $q->orderBy('name')]);
 
+        $departamentos = Departamento::where('activo', true)
+            ->orderBy('nombre')
+            ->get();
+
         $capturistas = User::query()
+            ->with('departamento')
             ->where('rol', 'capturista')
             ->where('activo', true)
             ->orderBy('name')
@@ -120,7 +125,7 @@ class EquipoGestionController extends Controller
             'dodas' => Doda::where('equipo_id', $equipo->id)->count(),
         ];
 
-        return view('agente.equipos.show', compact('equipo', 'capturistas', 'stats'));
+        return view('agente.equipos.show', compact('equipo', 'departamentos', 'capturistas', 'stats'));
     }
 
     public function update(Request $request, Equipo $equipo): RedirectResponse
