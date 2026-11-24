@@ -3,7 +3,7 @@
         <div>
             <span class="aduana-eyebrow aduana-eyebrow--muted">VISTA GENERAL · AGENTE</span>
             <h3>Panel de revisión y validación</h3>
-            <p>Revisa los documentos enviados por los capturistas, registra observaciones y administra los equipos de trabajo.</p>
+            <p>Selecciona un departamento en cada apartado para filtrar documentos, usuarios o equipos.</p>
         </div>
         <div class="aduana-home__stamp"><span>AS</span><small>REVISIÓN</small></div>
     </div>
@@ -19,57 +19,57 @@
         <article class="aduana-stat-card">
             <span class="aduana-stat-card__label">Validados</span>
             <strong>{{ $s['validados'] }}</strong>
-            <small>Revisiones aprobadas</small>
+            <small>Aprobados</small>
         </article>
         <article class="aduana-stat-card">
-            <span class="aduana-stat-card__label">No validados</span>
+            <span class="aduana-stat-card__label">Devueltos</span>
             <strong>{{ $s['devueltos'] }}</strong>
-            <small>Devueltos con observaciones</small>
+            <small>Con observaciones</small>
         </article>
     </div>
 
     <div class="aduana-role-section-title">
         <div>
-            <h4>Centro de validación</h4>
-            <p>Selecciona una bandeja para consultar los documentos correspondientes.</p>
+            <h4>Accesos rápidos</h4>
+            <p>Cada módulo inicia con el listado de departamentos para filtrar.</p>
         </div>
     </div>
 
     <div class="aduana-module-grid">
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon aduana-module-card__icon--gold">◷</div>
-            <span class="aduana-module-card__kicker">ATENCIÓN REQUERIDA</span>
+            <span class="aduana-module-card__kicker">BANDEJA</span>
             <h4>Por revisar</h4>
-            <p>{{ $s['pendientes'] }} documento(s) esperan una decisión de validación.</p>
-            <a href="{{ route('agente.revisiones.index', 'pendientes') }}" class="aduana-text-action">Abrir bandeja <span>→</span></a>
+            <p>{{ $s['pendientes'] }} pendiente(s). Filtra por departamento en el apartado.</p>
+            <button type="button" class="aduana-text-action" @click="tab = 'pendientes'">Elegir departamento <span>→</span></button>
         </article>
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon aduana-module-card__icon--teal">✓</div>
-            <span class="aduana-module-card__kicker">REVISIÓN CONCLUIDA</span>
-            <h4>Validados</h4>
-            <p>{{ $s['validados'] }} documento(s) aprobados en la revisión académica.</p>
-            <a href="{{ route('agente.revisiones.index', 'validados') }}" class="aduana-text-action">Consultar <span>→</span></a>
+            <span class="aduana-module-card__kicker">ESTATUS</span>
+            <h4>Estatus de validación</h4>
+            <p>Validados y devueltos con etiqueta de estado.</p>
+            <button type="button" class="aduana-text-action" @click="tab = 'validados'">Elegir departamento <span>→</span></button>
         </article>
         <article class="aduana-module-card">
-            <div class="aduana-module-card__icon aduana-module-card__icon--coral">↶</div>
-            <span class="aduana-module-card__kicker">CON OBSERVACIONES</span>
-            <h4>No validados</h4>
-            <p>{{ $s['devueltos'] }} documento(s) devueltos para corrección.</p>
-            <a href="{{ route('agente.revisiones.index', 'devueltos') }}" class="aduana-text-action">Ver devueltos <span>→</span></a>
-        </article>
-        <article class="aduana-module-card">
-            <div class="aduana-module-card__icon aduana-module-card__icon--navy">♧</div>
-            <span class="aduana-module-card__kicker">COLABORACIÓN</span>
-            <h4>Equipos</h4>
-            <p>Crea equipos e incorpora capturistas al trabajo en grupo.</p>
-            <a href="{{ route('agente.equipos.index') }}" class="aduana-text-action">Gestionar equipos <span>→</span></a>
+            <div class="aduana-module-card__icon aduana-module-card__icon--navy">♙</div>
+            <span class="aduana-module-card__kicker">ORGANIZACIÓN</span>
+            <h4>Usuarios</h4>
+            <p>Departamentos y capturistas asociados.</p>
+            <button type="button" class="aduana-text-action" @click="tab = 'usuarios'">Elegir departamento <span>→</span></button>
         </article>
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon">▤</div>
             <span class="aduana-module-card__kicker">CONSULTA</span>
             <h4>Historial</h4>
-            <p>Consulta todas las revisiones realizadas.</p>
-            <a href="{{ route('agente.revisiones.index', 'historial') }}" class="aduana-text-action">Abrir historial <span>→</span></a>
+            <p>Vista rápida en el panel (sin salir).</p>
+            <button type="button" class="aduana-text-action" @click="tab = 'historial'">Ver historial <span>→</span></button>
+        </article>
+        <article class="aduana-module-card">
+            <div class="aduana-module-card__icon aduana-module-card__icon--navy">♧</div>
+            <span class="aduana-module-card__kicker">COLABORACIÓN</span>
+            <h4>Equipos</h4>
+            <p>Filtra equipos por departamento de sus miembros.</p>
+            <button type="button" class="aduana-text-action" @click="tab = 'equipos'">Elegir departamento <span>→</span></button>
         </article>
     </div>
 </section>

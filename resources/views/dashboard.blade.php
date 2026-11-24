@@ -24,8 +24,8 @@
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
                 ['id' => 'pendientes', 'label' => 'Por revisar', 'icon' => '◷'],
-                ['id' => 'validados', 'label' => 'Validados', 'icon' => '✓'],
-                ['id' => 'devueltos', 'label' => 'No validados', 'icon' => '↶'],
+                ['id' => 'validados', 'label' => 'Estatus de validación', 'icon' => '✓'],
+                ['id' => 'usuarios', 'label' => 'Usuarios', 'icon' => '♙'],
                 ['id' => 'historial', 'label' => 'Historial', 'icon' => '▤'],
                 ['id' => 'equipos', 'label' => 'Equipos', 'icon' => '♧'],
                 ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
@@ -194,14 +194,42 @@
                 {{-- AGENTE --}}
                 @elseif ($rol === 'agente')
 
-                    @php $s = $agentStats ?? ['pendientes'=>0,'validados'=>0,'devueltos'=>0]; @endphp
+                    @php
+                        $deps = $agentDepartamentos ?? collect();
+                        $s = $agentStats ?? ['pendientes' => 0, 'validados' => 0, 'devueltos' => 0];
+                    @endphp
 
                     @foreach ([
-                        'pendientes' => ['Por revisar', 'Documentos enviados pendientes de decisión.', 'pendientes', $s['pendientes']],
-                        'validados' => ['Documentos validados', 'Revisiones académicas aprobadas.', 'validados', $s['validados']],
-                        'devueltos' => ['No validados', 'Devueltos con observaciones para corrección.', 'devueltos', $s['devueltos']],
-                        'historial' => ['Historial de revisiones', 'Consulta todas las revisiones realizadas.', 'historial', null],
-                        'equipos' => ['Gestión de equipos', 'Crea equipos e incorpora capturistas.', 'equipos', null],
+                        'pendientes' => [
+                            'title' => 'Por revisar',
+                            'desc' => 'Elige un departamento para ver solo sus documentos pendientes de revisión.',
+                            'mode' => 'revisiones',
+                            'bandeja' => 'pendientes',
+                        ],
+                        'validados' => [
+                            'title' => 'Estatus de validación',
+                            'desc' => 'Elige un departamento para consultar documentos validados o devueltos.',
+                            'mode' => 'estatus',
+                            'bandeja' => 'historial',
+                        ],
+                        'usuarios' => [
+                            'title' => 'Usuarios capturista',
+                            'desc' => 'Elige un departamento para ver o administrar sus capturistas.',
+                            'mode' => 'usuarios',
+                            'bandeja' => null,
+                        ],
+                        'historial' => [
+                            'title' => 'Historial de revisiones',
+                            'desc' => 'Vista rápida de documentos validados o devueltos (todos los departamentos).',
+                            'mode' => 'historial_inline',
+                            'bandeja' => null,
+                        ],
+                        'equipos' => [
+                            'title' => 'Gestión de equipos',
+                            'desc' => 'Elige un departamento para ver equipos con capturistas de ese departamento.',
+                            'mode' => 'equipos',
+                            'bandeja' => null,
+                        ],
                     ] as $key => $data)
                         <div
                             x-cloak
@@ -216,30 +244,77 @@
                                 <div class="aduana-module-view__heading">
                                     <div>
                                         <span class="aduana-eyebrow aduana-eyebrow--muted">Agente</span>
-                                        <h3>{{ $data[0] }}</h3>
-                                        <p>{{ $data[1] }}@if($data[3] !== null) · <strong>{{ $data[3] }}</strong> documento(s)@endif</p>
+                                        <h3>{{ $data['title'] }}</h3>
+                                        <p>{{ $data['desc'] }}</p>
                                     </div>
-                                    @if ($key === 'equipos')
-                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-btn aduana-btn--primary">Administrar equipos</a>
-                                    @else
-                                        <a href="{{ route('agente.revisiones.index', $data[2]) }}" class="aduana-btn aduana-btn--primary">Abrir bandeja</a>
-                                    @endif
                                 </div>
-                                <div class="aduana-choice-grid">
-                                    @if ($key === 'equipos')
-                                        <a href="{{ route('agente.equipos.index') }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
-                                            <h4>Ver equipos</h4>
-                                            <p>Lista, crea y asigna capturistas a equipos de trabajo.</p>
-                                            <span class="aduana-status">Disponible</span>
-                                        </a>
+
+                                @if ($data['mode'] === 'historial_inline')
+                                    @php $hist = $agentHistorial ?? collect(); @endphp
+                                    @if ($hist->isEmpty())
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">▤</div>
+                                            <strong>Sin revisiones aún</strong>
+                                            <p>Los documentos validados o devueltos aparecerán aquí.</p>
+                                        </div>
                                     @else
-                                        <a href="{{ route('agente.revisiones.index', $data[2]) }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
-                                            <h4>Ir a {{ $data[0] }}</h4>
-                                            <p>Consulta, valida o devuelve documentos de esta bandeja.</p>
-                                            <span class="aduana-status">Disponible</span>
-                                        </a>
+                                        <div class="aduana-table-wrap">
+                                            <table class="aduana-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo</th>
+                                                        <th>Departamento</th>
+                                                        <th>Propietario</th>
+                                                        <th>Estatus</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($hist as $item)
+                                                        <tr>
+                                                            <td>{{ $item['tipo'] }} <small class="text-slate-500">{{ $item['folio'] }}</small></td>
+                                                            <td>{{ $item['departamento'] }}</td>
+                                                            <td>{{ $item['capturista'] }}</td>
+                                                            <td>@include('agente.partials.estatus-badge', ['estatus' => $item['estatus'], 'etiqueta' => $item['etiqueta']])</td>
+                                                            <td><a class="aduana-link" href="{{ $item['url'] }}">Ver</a></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     @endif
-                                </div>
+                                @else
+                                    @if ($deps->isEmpty())
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">♙</div>
+                                            <strong>Sin departamentos</strong>
+                                            <p>Crea un departamento en la pestaña Usuarios para poder filtrar.</p>
+                                            <a href="{{ route('agente.usuarios.index') }}" class="aduana-btn aduana-btn--primary mt-3">Ir a Usuarios</a>
+                                        </div>
+                                    @else
+                                        <div class="aduana-choice-grid">
+                                            @foreach ($deps as $dep)
+                                                @php
+                                                    if ($data['mode'] === 'revisiones') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => $data['bandeja'], 'departamento_id' => $dep->id]);
+                                                    } elseif ($data['mode'] === 'estatus') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => 'historial', 'departamento_id' => $dep->id]);
+                                                    } elseif ($data['mode'] === 'equipos') {
+                                                        $href = route('agente.equipos.index', ['departamento_id' => $dep->id]);
+                                                    } else {
+                                                        $href = route('agente.usuarios.index', ['departamento_id' => $dep->id]);
+                                                    }
+                                                @endphp
+                                                <a href="{{ $href }}" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                                    <span class="aduana-module-card__kicker">DEPARTAMENTO</span>
+                                                    <h4>{{ $dep->clave }}</h4>
+                                                    <p>{{ $dep->nombre }}@if($dep->descripcion) — {{ $dep->descripcion }}@endif</p>
+                                                    <span class="aduana-status">Filtrar</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     @endforeach

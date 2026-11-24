@@ -24,8 +24,8 @@
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
                 ['id' => 'pendientes', 'label' => 'Por revisar', 'icon' => '◷'],
-                ['id' => 'validados', 'label' => 'Validados', 'icon' => '✓'],
-                ['id' => 'devueltos', 'label' => 'No validados', 'icon' => '↶'],
+                ['id' => 'validados', 'label' => 'Estatus de validación', 'icon' => '✓'],
+                ['id' => 'usuarios', 'label' => 'Usuarios', 'icon' => '♙'],
                 ['id' => 'historial', 'label' => 'Historial', 'icon' => '▤'],
                 ['id' => 'equipos', 'label' => 'Equipos', 'icon' => '♧'],
                 ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
@@ -204,14 +204,42 @@
                 
                 <?php elseif($rol === 'agente'): ?>
 
-                    <?php $s = $agentStats ?? ['pendientes'=>0,'validados'=>0,'devueltos'=>0]; ?>
+                    <?php
+                        $deps = $agentDepartamentos ?? collect();
+                        $s = $agentStats ?? ['pendientes' => 0, 'validados' => 0, 'devueltos' => 0];
+                    ?>
 
                     <?php $__currentLoopData = [
-                        'pendientes' => ['Por revisar', 'Documentos enviados pendientes de decisión.', 'pendientes', $s['pendientes']],
-                        'validados' => ['Documentos validados', 'Revisiones académicas aprobadas.', 'validados', $s['validados']],
-                        'devueltos' => ['No validados', 'Devueltos con observaciones para corrección.', 'devueltos', $s['devueltos']],
-                        'historial' => ['Historial de revisiones', 'Consulta todas las revisiones realizadas.', 'historial', null],
-                        'equipos' => ['Gestión de equipos', 'Crea equipos e incorpora capturistas.', 'equipos', null],
+                        'pendientes' => [
+                            'title' => 'Por revisar',
+                            'desc' => 'Elige un departamento para ver solo sus documentos pendientes de revisión.',
+                            'mode' => 'revisiones',
+                            'bandeja' => 'pendientes',
+                        ],
+                        'validados' => [
+                            'title' => 'Estatus de validación',
+                            'desc' => 'Elige un departamento para consultar documentos validados o devueltos.',
+                            'mode' => 'estatus',
+                            'bandeja' => 'historial',
+                        ],
+                        'usuarios' => [
+                            'title' => 'Usuarios capturista',
+                            'desc' => 'Elige un departamento para ver o administrar sus capturistas.',
+                            'mode' => 'usuarios',
+                            'bandeja' => null,
+                        ],
+                        'historial' => [
+                            'title' => 'Historial de revisiones',
+                            'desc' => 'Vista rápida de documentos validados o devueltos (todos los departamentos).',
+                            'mode' => 'historial_inline',
+                            'bandeja' => null,
+                        ],
+                        'equipos' => [
+                            'title' => 'Gestión de equipos',
+                            'desc' => 'Elige un departamento para ver equipos con capturistas de ese departamento.',
+                            'mode' => 'equipos',
+                            'bandeja' => null,
+                        ],
                     ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div
                             x-cloak
@@ -226,30 +254,77 @@
                                 <div class="aduana-module-view__heading">
                                     <div>
                                         <span class="aduana-eyebrow aduana-eyebrow--muted">Agente</span>
-                                        <h3><?php echo e($data[0]); ?></h3>
-                                        <p><?php echo e($data[1]); ?><?php if($data[3] !== null): ?> · <strong><?php echo e($data[3]); ?></strong> documento(s)<?php endif; ?></p>
+                                        <h3><?php echo e($data['title']); ?></h3>
+                                        <p><?php echo e($data['desc']); ?></p>
                                     </div>
-                                    <?php if($key === 'equipos'): ?>
-                                        <a href="<?php echo e(route('agente.equipos.index')); ?>" class="aduana-btn aduana-btn--primary">Administrar equipos</a>
-                                    <?php else: ?>
-                                        <a href="<?php echo e(route('agente.revisiones.index', $data[2])); ?>" class="aduana-btn aduana-btn--primary">Abrir bandeja</a>
-                                    <?php endif; ?>
                                 </div>
-                                <div class="aduana-choice-grid">
-                                    <?php if($key === 'equipos'): ?>
-                                        <a href="<?php echo e(route('agente.equipos.index')); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
-                                            <h4>Ver equipos</h4>
-                                            <p>Lista, crea y asigna capturistas a equipos de trabajo.</p>
-                                            <span class="aduana-status">Disponible</span>
-                                        </a>
+
+                                <?php if($data['mode'] === 'historial_inline'): ?>
+                                    <?php $hist = $agentHistorial ?? collect(); ?>
+                                    <?php if($hist->isEmpty()): ?>
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">▤</div>
+                                            <strong>Sin revisiones aún</strong>
+                                            <p>Los documentos validados o devueltos aparecerán aquí.</p>
+                                        </div>
                                     <?php else: ?>
-                                        <a href="<?php echo e(route('agente.revisiones.index', $data[2])); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
-                                            <h4>Ir a <?php echo e($data[0]); ?></h4>
-                                            <p>Consulta, valida o devuelve documentos de esta bandeja.</p>
-                                            <span class="aduana-status">Disponible</span>
-                                        </a>
+                                        <div class="aduana-table-wrap">
+                                            <table class="aduana-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo</th>
+                                                        <th>Departamento</th>
+                                                        <th>Propietario</th>
+                                                        <th>Estatus</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php $__currentLoopData = $hist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <tr>
+                                                            <td><?php echo e($item['tipo']); ?> <small class="text-slate-500"><?php echo e($item['folio']); ?></small></td>
+                                                            <td><?php echo e($item['departamento']); ?></td>
+                                                            <td><?php echo e($item['capturista']); ?></td>
+                                                            <td><?php echo $__env->make('agente.partials.estatus-badge', ['estatus' => $item['estatus'], 'etiqueta' => $item['etiqueta']], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?></td>
+                                                            <td><a class="aduana-link" href="<?php echo e($item['url']); ?>">Ver</a></td>
+                                                        </tr>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     <?php endif; ?>
-                                </div>
+                                <?php else: ?>
+                                    <?php if($deps->isEmpty()): ?>
+                                        <div class="aduana-empty-state">
+                                            <div class="aduana-empty-state__icon">♙</div>
+                                            <strong>Sin departamentos</strong>
+                                            <p>Crea un departamento en la pestaña Usuarios para poder filtrar.</p>
+                                            <a href="<?php echo e(route('agente.usuarios.index')); ?>" class="aduana-btn aduana-btn--primary mt-3">Ir a Usuarios</a>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="aduana-choice-grid">
+                                            <?php $__currentLoopData = $deps; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dep): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php
+                                                    if ($data['mode'] === 'revisiones') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => $data['bandeja'], 'departamento_id' => $dep->id]);
+                                                    } elseif ($data['mode'] === 'estatus') {
+                                                        $href = route('agente.revisiones.index', ['bandeja' => 'historial', 'departamento_id' => $dep->id]);
+                                                    } elseif ($data['mode'] === 'equipos') {
+                                                        $href = route('agente.equipos.index', ['departamento_id' => $dep->id]);
+                                                    } else {
+                                                        $href = route('agente.usuarios.index', ['departamento_id' => $dep->id]);
+                                                    }
+                                                ?>
+                                                <a href="<?php echo e($href); ?>" class="aduana-choice-card" style="text-decoration:none;color:inherit">
+                                                    <span class="aduana-module-card__kicker">DEPARTAMENTO</span>
+                                                    <h4><?php echo e($dep->clave); ?></h4>
+                                                    <p><?php echo e($dep->nombre); ?><?php if($dep->descripcion): ?> — <?php echo e($dep->descripcion); ?><?php endif; ?></p>
+                                                    <span class="aduana-status">Filtrar</span>
+                                                </a>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

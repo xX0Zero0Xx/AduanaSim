@@ -14,9 +14,15 @@ use Illuminate\View\View;
 
 class EquipoGestionController extends Controller
 {
-    public function index(): View
+    public function index(\Illuminate\Http\Request $request): View
     {
+        $departamentoId = $request->get('departamento_id');
+
         $equipos = Equipo::with(['users' => fn ($q) => $q->orderBy('name')])
+            ->when($departamentoId, function ($q) use ($departamentoId) {
+                // Equipos que tienen al menos un miembro del departamento
+                $q->whereHas('users', fn ($u) => $u->where('departamento_id', $departamentoId));
+            })
             ->orderBy('nombre')
             ->get();
 
@@ -30,7 +36,11 @@ class EquipoGestionController extends Controller
             ];
         }
 
-        return view('agente.equipos.index', compact('equipos', 'stats'));
+        $departamento = $departamentoId
+            ? \App\Models\Departamento::find($departamentoId)
+            : null;
+
+        return view('agente.equipos.index', compact('equipos', 'stats', 'departamento'));
     }
 
     public function store(Request $request): RedirectResponse

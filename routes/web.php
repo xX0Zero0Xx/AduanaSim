@@ -7,6 +7,8 @@ use App\Http\Controllers\Capturista\HistorialController;
 use App\Http\Controllers\Capturista\PedimentoController;
 use App\Http\Controllers\Agente\RevisionController;
 use App\Http\Controllers\Agente\EquipoGestionController;
+use App\Http\Controllers\Agente\UsuarioController;
+use App\Http\Controllers\Agente\DepartamentoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\Cove;
@@ -15,6 +17,7 @@ use App\Models\Pedimento;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/', function () {
     return view('welcome');
@@ -100,6 +103,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
 
 
+        $agentHistorial = collect();
+        $agentDepartamentos = collect();
         if ($user->isAgente() || $user->isAdmin()) {
             $agentStats = [
                 'pendientes' => Pedimento::where('estatus', 'enviado')->count()
@@ -112,6 +117,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     + Cove::where('estatus', 'devuelto')->count()
                     + Doda::where('estatus', 'devuelto')->count(),
             ];
+
+            // Historial rápido (solo validado / devuelto) para la pestaña del panel
+            $pushHist = function ($docs, string $label, string $key) use ($agentHistorial) {
+                foreach ($docs as $doc) {
+                    $dept = $doc->user?->departamento;
+                    $agentHistorial->push([
+                        'tipo' => $label,
+                        'folio' => $doc->folio,
+                        'estatus' => $doc->estatus,
+                        'etiqueta' => $doc->etiquetaEstatus(),
+                        'capturista' => $doc->user->name ?? '—',
+                        'departamento' => $dept->clave ?? '—',
+                        'url' => route('agente.revisiones.show', [$key, $doc->id]),
+                        'fecha' => $doc->updated_at,
+                    ]);
+                }
+            };
+            $userWith = method_exists(User::class, 'departamento') && \Schema::hasColumn('users', 'departamento_id')
+                ? ['user.departamento']
+                : ['user'];
+            $pushHist(Pedimento::with($userWith)->whereIn('estatus', ['validado', 'devuelto'])->latest()->limit(30)->get(), 'Pedimento', 'pedimento');
+            $pushHist(Cove::with($userWith)->whereIn('estatus', ['validado', 'devuelto'])->latest()->limit(30)->get(), 'COVE', 'cove');
+            $pushHist(Doda::with($userWith)->whereIn('estatus', ['validado', 'devuelto'])->latest()->limit(30)->get(), 'DODA', 'doda');
+            $agentHistorial = $agentHistorial->sortByDesc(fn($i) => $i['fecha'])->values()->take(40);
+            $agentDepartamentos = \App\Models\Departamento::where('activo', true)->orderBy('clave')->get();
         } else {
             $agentStats = null;
         }
@@ -124,6 +154,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'equipos' => $equipos,
             'statsPorEquipo' => $statsPorEquipo,
             'agentStats' => $agentStats ?? null,
+            'agentHistorial' => $agentHistorial ?? collect(),
+            'agentDepartamentos' => $agentDepartamentos ?? collect(),
         ]);
     })->name('dashboard');
 
@@ -164,6 +196,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/equipos/{equipo}', [EquipoGestionController::class, 'destroy'])->name('equipos.destroy');
         Route::post('/equipos/{equipo}/miembros', [EquipoGestionController::class, 'attachMember'])->name('equipos.attach');
         Route::delete('/equipos/{equipo}/miembros/{user}', [EquipoGestionController::class, 'detachMember'])->name('equipos.detach');
+
+        // Usuarios capturista + departamentos
+        Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+        Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+        Route::put('/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
+        // Agente no elimina usuarios
+        // Route::delete('/usuarios/{usuario}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+        Route::post('/departamentos', [DepartamentoController::class, 'store'])->name('departamentos.store');
+        Route::put('/departamentos/{departamento}', [DepartamentoController::class, 'update'])->name('departamentos.update');
     });
 
     // Capturista (+ admin/agente para supervisión)

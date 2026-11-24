@@ -38,5 +38,64 @@ class UsuariosDePrueba extends Seeder
             //'password' => bcrypt(env('PASSWORD_CAPTURISTA')),
             'rol' => 'capturista'
         ]);
+
+        /*
+        $users = [
+            ['name' => 'capturista',  'email' => 'capturista@AduanaSim.local'],
+            ['name' => 'capturista2', 'email' => 'capturista2@AduanaSim.local'],
+            ['name' => 'capturista3', 'email' => 'capturista3@AduanaSim.local'],
+            ['name' => 'capturista4', 'email' => 'capturista4@AduanaSim.local'],
+        ];
+
+        foreach ($users as $user) {
+            DB::table('users')->insert([
+                'name'     => $user['name'],
+                'email'    => $user['email'],
+                'password' => bcrypt('Panecito123'),
+                'rol'      => 'capturista',
+            ]);
+        }
     }
 }
+
+
+/*
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class UsuariosDePrueba extends Seeder
+{
+    public function run(): void
+    {
+        // Admin y Agente (una sola inserción)
+        DB::table('users')->insert([
+            [
+                'name'     => 'admin',
+                'email'    => 'admin@AduanaSim.local',
+                'password' => bcrypt('Panecito123'),
+                'rol'      => 'admin',
+            ],
+            [
+                'name'     => 'agente',
+                'email'    => 'agente@AduanaSim.local',
+                'password' => bcrypt('Panecito123'),
+                'rol'      => 'agente',
+            ],
+        ]);
+
+        // Capturistas (bucle)
+        for ($i = 1; $i <= 5; $i++) {
+            DB::table('users')->insert([
+                'name'     => "capturista{$i}",
+                'email'    => "capturista{$i}@AduanaSim.local",
+                'password' => bcrypt('Panecito123'),
+                'rol'      => 'capturista',
+            ]);
+        }
+    }
+}   
+*/

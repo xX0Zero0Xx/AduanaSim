@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agente;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cove;
+use App\Models\Departamento;
 use App\Models\Doda;
 use App\Models\Pedimento;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +14,6 @@ use Illuminate\View\View;
 
 class RevisionController extends Controller
 {
-    /** Lista unificada por estatus: enviado | validado | devuelto */
     public function index(Request $request, string $bandeja = 'pendientes'): View
     {
         $map = [
@@ -27,13 +27,16 @@ class RevisionController extends Controller
 
         $estatus = $map[$bandeja];
         $tipo = $request->get('tipo', 'todos');
-        $items = $this->collectDocuments($estatus, $tipo, $bandeja === 'historial' ? 100 : 80);
+        $departamentoId = $request->get('departamento_id');
+
+        $items = $this->collectDocuments($estatus, $tipo, $departamentoId, $bandeja === 'historial' ? 120 : 80);
+        $departamentos = Departamento::where('activo', true)->orderBy('clave')->get();
 
         $titulos = [
             'pendientes' => 'Por revisar',
             'validados' => 'Documentos validados',
             'devueltos' => 'Documentos no validados',
-            'historial' => 'Historial de revisiones',
+            'historial' => 'Estatus de validación',
         ];
 
         return view('agente.revisiones.index', [
@@ -42,13 +45,15 @@ class RevisionController extends Controller
             'items' => $items,
             'tipo' => $tipo,
             'estatusFiltro' => $estatus,
+            'departamentos' => $departamentos,
+            'departamentoId' => $departamentoId,
         ]);
     }
 
     public function show(string $tipo, int $id): View
     {
         $doc = $this->resolve($tipo, $id);
-        $doc->loadMissing(['user']);
+        $doc->loadMissing(['user.departamento']);
 
         if ($tipo === 'pedimento') {
             $doc->load('partidas');
@@ -100,16 +105,24 @@ class RevisionController extends Controller
         ]);
 
         return redirect()
-            ->route('agente.revisiones.index', 'devueltos')
+            ->route('agente.revisiones.index', 'pendientes')
             ->with('status', ucfirst($tipo)." {$doc->folio} devuelto con observaciones.");
     }
 
-    private function collectDocuments(?string $estatus, string $tipo, int $limit)
+    private function collectDocuments(?string $estatus, string $tipo, $departamentoId, int $limit)
     {
         $items = collect();
 
+        $userFilter = function ($q) use ($departamentoId) {
+            $q->with('departamento');
+            if ($departamentoId) {
+                $q->where('departamento_id', $departamentoId);
+            }
+        };
+
         $push = function ($docs, string $label, string $key) use ($items) {
             foreach ($docs as $doc) {
+                $dept = $doc->user?->departamento;
                 $items->push([
                     'tipo' => $label,
                     'tipo_key' => $key,
@@ -121,6 +134,8 @@ class RevisionController extends Controller
                     'enviado_at' => $doc->enviado_at,
                     'validado_at' => $doc->validado_at ?? null,
                     'capturista' => $doc->user->name ?? '—',
+                    'departamento' => $dept ? $dept->clave : '—',
+                    'departamento_nombre' => $dept ? $dept->nombre : null,
                     'extra' => match ($key) {
                         'pedimento' => $doc->nombre_operador,
                         'cove' => $doc->emisor_nombre,
@@ -135,31 +150,40 @@ class RevisionController extends Controller
         $queryLimit = (int) ceil($limit / 3) + 5;
 
         if ($tipo === 'todos' || $tipo === 'pedimento') {
-            $q = Pedimento::with('user')->latest();
+            $q = Pedimento::with(['user' => $userFilter])->latest();
             if ($estatus) {
                 $q->where('estatus', $estatus);
             } else {
-                $q->whereIn('estatus', ['enviado', 'validado', 'devuelto']);
+                $q->whereIn('estatus', ['validado', 'devuelto']);
+            }
+            if ($departamentoId) {
+                $q->whereHas('user', fn ($u) => $u->where('departamento_id', $departamentoId));
             }
             $push($q->limit($queryLimit)->get(), 'Pedimento', 'pedimento');
         }
 
         if ($tipo === 'todos' || $tipo === 'cove') {
-            $q = Cove::with('user')->latest();
+            $q = Cove::with(['user' => $userFilter])->latest();
             if ($estatus) {
                 $q->where('estatus', $estatus);
             } else {
-                $q->whereIn('estatus', ['enviado', 'validado', 'devuelto']);
+                $q->whereIn('estatus', ['validado', 'devuelto']);
+            }
+            if ($departamentoId) {
+                $q->whereHas('user', fn ($u) => $u->where('departamento_id', $departamentoId));
             }
             $push($q->limit($queryLimit)->get(), 'COVE', 'cove');
         }
 
         if ($tipo === 'todos' || $tipo === 'doda') {
-            $q = Doda::with('user')->latest();
+            $q = Doda::with(['user' => $userFilter])->latest();
             if ($estatus) {
                 $q->where('estatus', $estatus);
             } else {
-                $q->whereIn('estatus', ['enviado', 'validado', 'devuelto']);
+                $q->whereIn('estatus', ['validado', 'devuelto']);
+            }
+            if ($departamentoId) {
+                $q->whereHas('user', fn ($u) => $u->where('departamento_id', $departamentoId));
             }
             $push($q->limit($queryLimit)->get(), 'DODA', 'doda');
         }

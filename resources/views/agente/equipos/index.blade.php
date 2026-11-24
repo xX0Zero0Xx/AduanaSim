@@ -5,7 +5,12 @@
                 <div>
                     <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
                     <h3>Gestión de equipos</h3>
-                    <p>Crea equipos, asigna capturistas y organiza el trabajo académico.</p>
+                    <p>
+                        Crea equipos, asigna capturistas y organiza el trabajo académico.
+                        @if (!empty($departamento))
+                            · Filtro: <strong>{{ $departamento->clave }}</strong>
+                        @endif
+                    </p>
                 </div>
                 <a href="{{ route('dashboard', ['tab' => 'equipos']) }}" class="aduana-btn aduana-btn--ghost">← Panel</a>
             </div>

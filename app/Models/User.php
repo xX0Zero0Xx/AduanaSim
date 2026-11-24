@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'rol', 'activo'])]
+#[Fillable(['name', 'email', 'password', 'rol', 'activo', 'departamento_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -48,6 +48,11 @@ class User extends Authenticatable
         return in_array($this->rol, $roles, true);
     }
 
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class);
+    }
+
     public function equipos()
     {
         return $this->belongsToMany(Equipo::class)
@@ -70,4 +75,3 @@ class User extends Authenticatable
         return $this->hasMany(Doda::class);
     }
 }
-
