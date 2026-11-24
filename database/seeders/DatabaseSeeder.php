@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             UsuariosDePrueba::class,
             CatalogosCompletosSeeder::class,
             PedimentoPrueba::class,
-            departamentos::class
+            //departamentos::class
         ]);
     }
 }

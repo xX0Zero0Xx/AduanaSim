@@ -19,7 +19,7 @@
                     <h3><?php echo e($equipo->nombre); ?></h3>
                     <p><?php echo e($equipo->descripcion ?: 'Sin descripción asignada.'); ?></p>
                 </div>
-                <a href="<?php echo e(route('agente.equipos.index')); ?>" class="aduana-btn aduana-btn--ghost">
+                <a href="<?php echo e(route('dashboard', ['tab' => 'equipos'])); ?>" class="aduana-btn aduana-btn--ghost">
                     ← Volver a equipos
                 </a>
             </div>

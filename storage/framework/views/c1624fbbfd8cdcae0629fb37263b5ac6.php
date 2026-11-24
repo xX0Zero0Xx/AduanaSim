@@ -13,7 +13,7 @@
                 ['id' => 'modulos', 'label' => 'Módulos', 'icon' => '▦'],
                 ['id' => 'catalogos', 'label' => 'Catálogos', 'icon' => '▤'],
                 ['id' => 'auditoria', 'label' => 'Actividad', 'icon' => '◷'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
             ],
         ],
 
@@ -23,11 +23,11 @@
             'tabs' => [
                 ['id' => 'inicio', 'label' => 'Resumen', 'icon' => '⌂'],
                 ['id' => 'pendientes', 'label' => 'Por revisar', 'icon' => '◷'],
-                ['id' => 'validados', 'label' => 'Estatus de validación', 'icon' => '✓'],
+                //['id' => 'validados', 'label' => 'Estatus de validación', 'icon' => '✓'],
                 ['id' => 'usuarios', 'label' => 'Usuarios', 'icon' => '♙'],
                 ['id' => 'historial', 'label' => 'Historial', 'icon' => '▤'],
                 ['id' => 'equipos', 'label' => 'Equipos', 'icon' => '♧'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
             ],
         ],
 
@@ -41,8 +41,7 @@
                 ['id' => 'doda', 'label' => 'DODA', 'icon' => '▦'],
                 ['id' => 'modulo-ia', 'label' => 'Módulo IA', 'icon' => '✧'],
                 ['id' => 'historial', 'label' => 'Mis documentos', 'icon' => '◷'],
-                ['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
-                ['id' => 'perfil', 'label' => 'Mi perfil', 'icon' => '◎'],
+                //['id' => 'equipo', 'label' => 'Mi equipo', 'icon' => '♧'],
             ],
         ],
     ];
@@ -580,21 +579,22 @@
 
 <?php endif; ?>
 
-
                 
-                <div
-                    x-cloak
-                    x-show="tab === 'perfil'"
-                    x-transition.opacity
-                    role="tabpanel"
-                    id="panel-perfil"
-                    aria-labelledby="tab-perfil"
-                    tabindex="0"
-                >
-                    <?php echo $__env->make('profile.partials.show-information-from', [
-                        'user' => $user
-                    ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-                </div>
+                <?php if($rol !== 'capturista'): ?>
+                    <div
+                        x-cloak
+                        x-show="tab === 'perfil'"
+                        x-transition.opacity
+                        role="tabpanel"
+                        id="panel-perfil"
+                        aria-labelledby="tab-perfil"
+                        tabindex="0"
+                    >
+                        <?php echo $__env->make('profile.partials.show-information-from', [
+                            'user' => $user
+                        ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+                    </div>
+                <?php endif; ?>
 
             </div>
         </section>

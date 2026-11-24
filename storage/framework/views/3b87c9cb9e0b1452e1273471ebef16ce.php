@@ -43,13 +43,7 @@
             <p><?php echo e($s['pendientes']); ?> pendiente(s). Filtra por departamento en el apartado.</p>
             <button type="button" class="aduana-text-action" @click="tab = 'pendientes'">Elegir departamento <span>→</span></button>
         </article>
-        <article class="aduana-module-card">
-            <div class="aduana-module-card__icon aduana-module-card__icon--teal">✓</div>
-            <span class="aduana-module-card__kicker">ESTATUS</span>
-            <h4>Estatus de validación</h4>
-            <p>Validados y devueltos con etiqueta de estado.</p>
-            <button type="button" class="aduana-text-action" @click="tab = 'validados'">Elegir departamento <span>→</span></button>
-        </article>
+        
         <article class="aduana-module-card">
             <div class="aduana-module-card__icon aduana-module-card__icon--navy">♙</div>
             <span class="aduana-module-card__kicker">ORGANIZACIÓN</span>
