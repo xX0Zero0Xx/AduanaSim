@@ -7,7 +7,6 @@
                     <h3>Pedimento {{ $pedimento->folio }}</h3>
                     <p>Actualiza la información y las partidas del ejercicio.</p>
                 </div>
-                <a href="{{ route('capturista.pedimentos.show', $pedimento) }}" class="aduana-btn aduana-btn--ghost">← Ver</a>
             </div>
 
             @include('capturista.partials.flash')

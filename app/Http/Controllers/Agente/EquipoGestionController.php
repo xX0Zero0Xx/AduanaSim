@@ -28,8 +28,14 @@ class EquipoGestionController extends Controller
                     ->values();
 
                 return [
+                    'equipo' => $equipo,
                     'nombre' => $equipo->nombre,
                     'departamento' => $departamentos->isNotEmpty() ? $departamentos->implode(', ') : 'Sin departamento',
+                    'descripcion' => $equipo->descripcion ?: 'Sin descripción',
+                    'miembros' => $equipo->users->count(),
+                    'pedimentos' => Pedimento::where('equipo_id', $equipo->id)->count(),
+                    'coves' => Cove::where('equipo_id', $equipo->id)->count(),
+                    'dodas' => Doda::where('equipo_id', $equipo->id)->count(),
                 ];
             });
 

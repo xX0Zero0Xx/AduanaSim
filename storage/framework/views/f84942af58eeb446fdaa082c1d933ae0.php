@@ -15,7 +15,6 @@
                     <span class="aduana-eyebrow aduana-eyebrow--muted">Edición</span>
                     <h3>DODA <?php echo e($doda->folio); ?></h3>
                 </div>
-                <a href="<?php echo e(route('capturista.dodas.show', $doda)); ?>" class="aduana-btn aduana-btn--ghost">← Ver</a>
             </div>
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             <form method="POST" action="<?php echo e(route('capturista.dodas.update', $doda)); ?>" class="aduana-form">
@@ -24,6 +23,8 @@
                 <?php echo $__env->make('capturista.dodas._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 <div class="aduana-form-actions">
                     <button type="submit" class="aduana-btn aduana-btn--primary">Guardar cambios</button>
+                    <a href="<?php echo e(route('dashboard', ['tab' => 'doda'])); ?>" class="aduana-btn aduana-btn--ghost inline-flex items-center">Cancelar</a>
+
                 </div>
             </form>
         </section>

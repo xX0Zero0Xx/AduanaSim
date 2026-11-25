@@ -17,7 +17,9 @@
                     <p>Elabora, consulta y envía a validación tus ejercicios de pedimento.</p>
                 </div>
 
-<a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
+                    <a href="<?php echo e(route('dashboard', ['tab' => 'pedimentos'])); ?>" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
+
             </div>
 
             <?php echo $__env->make('capturista.partials.flash', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>

@@ -8,7 +8,7 @@
                     <p>Asocia pedimentos y genera la representación académica del DODA.</p>
                 </div>
 
-<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al Panel</a>
+<a href="{{ route('dashboard', ['tab' => 'doda']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
 
             </div>
             @include('capturista.partials.flash')
@@ -55,7 +55,9 @@
                                     <td>{{ $d->pedimentos->pluck('folio')->join(', ') ?: '—' }}</td>
                                     <td>@include('capturista.partials.estatus-badge', ['estatus'=>$d->estatus,'etiqueta'=>$d->etiquetaEstatus()])</td>
                                     <td class="aduana-table-actions">
+
                                         <a href="{{ route('capturista.dodas.show', $d) }}">Ver</a>
+                                        
                                         @if ($d->puedeEditarse())
                                             <!-- <a href="{{ route('capturista.dodas.edit', $d) }}">Editar</a> -->
                                         @endif

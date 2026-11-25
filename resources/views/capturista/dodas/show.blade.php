@@ -8,10 +8,15 @@
                     <p>@include('capturista.partials.estatus-badge', ['estatus'=>$doda->estatus,'etiqueta'=>$doda->etiquetaEstatus()])</p>
                 </div>
                 <div class="aduana-actions-row">
-                    <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
+
+                    <a href="{{ route('dashboard', ['tab' => 'doda']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
+
                     <a href="{{ route('capturista.dodas.pdf', $doda) }}" class="aduana-btn" target="_blank">PDF Doda</a>
                     @if ($doda->puedeEditarse())
+                    
                         <a href="{{ route('capturista.dodas.edit', $doda) }}" class="aduana-btn">Editar</a>
+
                     @endif
                     @if ($doda->puedeEnviarse())
                         <form method="POST" action="{{ route('capturista.dodas.enviar', $doda) }}" onsubmit="return confirm('¿Enviar a validación?')">
