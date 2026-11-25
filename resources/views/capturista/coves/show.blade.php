@@ -8,7 +8,9 @@
                     <p>@include('capturista.partials.estatus-badge', ['estatus'=>$cove->estatus,'etiqueta'=>$cove->etiquetaEstatus()])</p>
                 </div>
                 <div class="aduana-actions-row">
-                    <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
+
+<a href="{{ route('dashboard', ['tab' => 'cove']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
                     <a href="{{ route('capturista.coves.pdf', $cove) }}" class="aduana-btn" target="_blank">PDF Cove</a>
                     @if ($cove->puedeEditarse())
                         <a href="{{ route('capturista.coves.edit', $cove) }}" class="aduana-btn">Editar</a>

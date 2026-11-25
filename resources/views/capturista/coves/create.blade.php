@@ -17,7 +17,7 @@
                 @include('capturista.coves._form')
                 <div class="aduana-form-actions">
                     <button type="submit" class="aduana-btn aduana-btn--primary">Guardar borrador</button>
-                    <a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Cancelar</a>
+                    <a href="{{ route('dashboard', ['tab' => 'cove']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Cancelar</a>
                 </div>
             </form>
         </section>

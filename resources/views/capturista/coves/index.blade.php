@@ -8,8 +8,8 @@
                     <p>Captura y consulta tus COVE académicos.</p>
                 </div>
 
-<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Voler al Panel</a>
-                
+<a href="{{ route('dashboard', ['tab' => 'cove']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
             </div>
             @include('capturista.partials.flash')
             <form method="GET" class="aduana-filter-bar">

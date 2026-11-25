@@ -8,62 +8,159 @@
 <?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
-    <div class="aduana-dashboard">
-        <section class="aduana-module-view">
-            <div class="aduana-module-view__heading">
-                <div>
-                    <span class="aduana-eyebrow aduana-eyebrow--muted">Colaboración</span>
-                    <h3>Equipos agrupados</h3>
-                    <p>
-                        Todos los equipos agrupados por departamento.
+    <div class="aduana-dashboard py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+        <section class="aduana-module-view space-y-8">
+
+            
+            <div
+                class="aduana-module-view__heading pb-6 border-b border-slate-700/60"
+                style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem;"
+            >
+                <div aria-hidden="true"></div>
+
+                <div class="text-center space-y-1.5" style="text-align: center;">
+                    <span class="aduana-eyebrow aduana-eyebrow--muted inline-block" style="font-size: 0.85rem;">
+                        Colaboración
+                    </span>
+                    <h3 class="font-bold tracking-tight" style="font-size: 2rem; line-height: 1.2;">
+                        Equipos agrupados
+                    </h3>
+                    <p class="text-slate-400 max-w-2xl mx-auto" style="font-size: 0.95rem;">
+                        Todos los equipos registrados en una vista general.
                         <?php if(!empty($departamento)): ?>
-                            · Filtro: <strong><?php echo e($departamento->clave); ?></strong>
+                            · Filtro activo: <strong><?php echo e($departamento->clave); ?></strong>
                         <?php endif; ?>
                     </p>
                 </div>
-                <div class="flex gap-2">
-                    <a href="<?php echo e(route('agente.equipos.create')); ?>" class="aduana-btn aduana-btn--primary">+ Crear equipo</a>
-                    <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
+
+                <div class="flex items-center justify-end gap-3 flex-wrap" style="justify-self: end;">
+                    <a href="<?php echo e(route('agente.equipos.create')); ?>" class="aduana-btn aduana-btn--primary inline-flex items-center">
+                        + Crear equipo
+                    </a>
+                    <a href="<?php echo e(route('dashboard', ['tab' => 'equipos'])); ?>" class="aduana-btn aduana-btn--ghost inline-flex items-center">
+                        ← Volver al Panel
+                    </a>
                 </div>
             </div>
 
+            
             <?php if(session('status')): ?>
-                <div class="aduana-alert aduana-alert--ok mb-4"><?php echo e(session('status')); ?></div>
+                <div class="aduana-alert aduana-alert--ok p-4 rounded-lg">
+                    <?php echo e(session('status')); ?>
+
+                </div>
             <?php endif; ?>
 
-            <?php if($gruposEquipos->isEmpty()): ?>
-                <div class="aduana-empty-state">
-                    <div class="aduana-empty-state__icon">♧</div>
-                    <strong>Sin equipos</strong>
-                    <p>Crea el primer equipo de trabajo para asignar capturistas.</p>
+            <?php
+                $todosLosEquipos = collect();
+                if (!$gruposEquipos->isEmpty()) {
+                    foreach ($gruposEquipos as $nombreGrupo => $lista) {
+                        foreach ($lista as $equipo) {
+                            $todosLosEquipos->push([
+                                'grupo' => $nombreGrupo,
+                                'equipo' => $equipo,
+                            ]);
+                        }
+                    }
+                }
+            ?>
+
+            
+            <?php if($todosLosEquipos->isEmpty()): ?>
+                <div class="aduana-empty-state p-12 text-center space-y-3">
+                    <div class="aduana-empty-state__icon text-3xl">♧</div>
+                    <strong class="text-lg block">Sin equipos registrados</strong>
+                    <p class="text-slate-400 max-w-md mx-auto">
+                        Crea el primer equipo de trabajo para comenzar a asignar capturistas.
+                    </p>
+                    <div class="pt-3">
+                        <a href="<?php echo e(route('agente.equipos.create')); ?>" class="aduana-btn aduana-btn--primary inline-flex items-center">
+                            + Crear primer equipo
+                        </a>
+                    </div>
                 </div>
             <?php else: ?>
-                <?php $__currentLoopData = $gruposEquipos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $nombreGrupo => $lista): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="mb-8">
-                        <div class="aduana-section-heading mb-3">
-                            <h3><?php echo e($nombreGrupo); ?></h3>
-                            <span class="aduana-eyebrow aduana-eyebrow--muted"><?php echo e($lista->count()); ?> <?php echo e($lista->count() === 1 ? 'equipo' : 'equipos'); ?></span>
+                <div class="aduana-module-card p-6 space-y-5">
+                    <div class="flex items-center justify-between gap-4 pb-3 border-b border-slate-700/60">
+                        <div>
+                            <span class="aduana-module-card__kicker block">Listado general</span>
+                            <h4 class="text-lg font-semibold">Todos los equipos</h4>
                         </div>
+                        <span class="aduana-eyebrow aduana-eyebrow--muted shrink-0">
+                            <?php echo e($todosLosEquipos->count()); ?> <?php echo e($todosLosEquipos->count() === 1 ? 'equipo' : 'equipos'); ?>
 
-                        <div class="aduana-module-grid">
-                            <?php $__currentLoopData = $lista; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $equipo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <article class="aduana-module-card">
-                                    <div class="aduana-module-card__icon aduana-module-card__icon--navy">♧</div>
-                                    <span class="aduana-module-card__kicker"><?php echo e($equipo->activo ? 'Activo' : 'Inactivo'); ?></span>
-                                    <h4><?php echo e($equipo->nombre); ?></h4>
-                                    <p><?php echo e($equipo->descripcion ?: 'Sin descripción'); ?></p>
-                                    <div class="aduana-stat-grid aduana-stat-grid--three mt-3">
-                                        <div class="aduana-stat-card"><span class="aduana-stat-card__label">Miembros</span><strong><?php echo e($stats[$equipo->id]['miembros'] ?? 0); ?></strong></div>
-                                        <div class="aduana-stat-card"><span class="aduana-stat-card__label">Pedimentos</span><strong><?php echo e($stats[$equipo->id]['pedimentos'] ?? 0); ?></strong></div>
-                                        <div class="aduana-stat-card"><span class="aduana-stat-card__label">COVE/DODA</span><strong><?php echo e(($stats[$equipo->id]['coves'] ?? 0) + ($stats[$equipo->id]['dodas'] ?? 0)); ?></strong></div>
-                                    </div>
-                                    <a href="<?php echo e(route('agente.equipos.show', $equipo)); ?>" class="aduana-text-action mt-3">Administrar <span>→</span></a>
-                                </article>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </div>
+                        </span>
                     </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-700/70 text-xs uppercase tracking-wider text-slate-400">
+                                    <th class="py-3.5 px-4">Equipo</th>
+                                    <th class="py-3.5 px-4">Departamento / Grupo</th>
+                                    <th class="py-3.5 px-4">Descripción</th>
+                                    <th class="py-3.5 px-4 text-center">Miembros</th>
+                                    <th class="py-3.5 px-4 text-center">Pedimentos</th>
+                                    <th class="py-3.5 px-4 text-center">COVEs</th>
+                                    <th class="py-3.5 px-4 text-center">DODAs</th>
+                                    <th class="py-3.5 px-4 text-right">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700/50">
+                                <?php $__currentLoopData = $todosLosEquipos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fila): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
+                                        $equipo = $fila['equipo'];
+                                        $nombreGrupo = $fila['grupo'];
+                                        $eqStats = $stats[$equipo->id] ?? [];
+                                    ?>
+                                    <tr class="hover:bg-slate-800/40 transition-colors">
+                                        <td class="py-4 px-4 font-semibold whitespace-nowrap">
+                                            <?php echo e($equipo->nombre); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 whitespace-nowrap">
+                                            <span class="aduana-eyebrow aduana-eyebrow--muted inline-block">
+                                                <?php echo e($nombreGrupo); ?>
+
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-4 text-sm text-slate-400 max-w-xs">
+                                            <?php echo e($equipo->descripcion ?: 'Sin descripción'); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 text-center font-semibold tabular-nums">
+                                            <?php echo e($eqStats['miembros'] ?? 0); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 text-center font-semibold tabular-nums">
+                                            <?php echo e($eqStats['pedimentos'] ?? 0); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 text-center font-semibold tabular-nums">
+                                            <?php echo e($eqStats['coves'] ?? 0); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 text-center font-semibold tabular-nums">
+                                            <?php echo e($eqStats['dodas'] ?? 0); ?>
+
+                                        </td>
+                                        <td class="py-4 px-4 text-right whitespace-nowrap">
+                                            <a
+                                                href="<?php echo e(route('agente.equipos.show', $equipo)); ?>"
+                                                class="aduana-text-action inline-flex items-center gap-1.5"
+                                            >
+                                                <span>Administrar equipo</span>
+                                                <span aria-hidden="true">→</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             <?php endif; ?>
+
         </section>
     </div>
  <?php echo $__env->renderComponent(); ?>

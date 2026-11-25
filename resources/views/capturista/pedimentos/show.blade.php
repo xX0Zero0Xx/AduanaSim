@@ -14,7 +14,7 @@
 
 <!-- <a href="{{ route('capturista.historial.index') }}" class="aduana-btn aduana-btn--ghost">← Volver a Mis documentos</a> -->
 
-<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">← Volver al panel</a>
+<a href="{{ route('dashboard', ['tab' => 'pedimentos']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center"> ← Volver al panel </a>
 
                     <!-- <a href="{{ route('capturista.pedimentos.index') }}" class="aduana-btn aduana-btn--ghost">← Lista</a> -->
 

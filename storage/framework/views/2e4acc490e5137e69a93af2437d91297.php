@@ -17,7 +17,9 @@
                     <p><?php echo $__env->make('capturista.partials.estatus-badge', ['estatus'=>$cove->estatus,'etiqueta'=>$cove->etiquetaEstatus()], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?></p>
                 </div>
                 <div class="aduana-actions-row">
-                    <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
+
+<a href="<?php echo e(route('dashboard', ['tab' => 'cove'])); ?>" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
                     <a href="<?php echo e(route('capturista.coves.pdf', $cove)); ?>" class="aduana-btn" target="_blank">PDF Cove</a>
                     <?php if($cove->puedeEditarse()): ?>
                         <a href="<?php echo e(route('capturista.coves.edit', $cove)); ?>" class="aduana-btn">Editar</a>

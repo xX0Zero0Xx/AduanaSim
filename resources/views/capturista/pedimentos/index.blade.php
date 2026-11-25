@@ -8,7 +8,9 @@
                     <p>Elabora, consulta y envía a validación tus ejercicios de pedimento.</p>
                 </div>
 
-<a href="{{ route('dashboard') }}" class="aduana-btn aduana-btn--ghost">Volver al panel</a>
+                    <a href="{{ route('dashboard', ['tab' => 'pedimentos']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
+
             </div>
 
             @include('capturista.partials.flash')

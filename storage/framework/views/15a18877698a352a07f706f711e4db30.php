@@ -17,7 +17,10 @@
                     <p><?php echo $__env->make('capturista.partials.estatus-badge', ['estatus'=>$doda->estatus,'etiqueta'=>$doda->etiquetaEstatus()], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?></p>
                 </div>
                 <div class="aduana-actions-row">
-                    <a href="<?php echo e(route('dashboard')); ?>" class="aduana-btn aduana-btn--ghost">← Volver al Panel</a>
+
+                    <a href="<?php echo e(route('dashboard', ['tab' => 'doda'])); ?>" class="aduana-btn aduana-btn--ghost inline-flex items-center">Volver al Panel</a>
+
+
                     <a href="<?php echo e(route('capturista.dodas.pdf', $doda)); ?>" class="aduana-btn" target="_blank">PDF Doda</a>
                     <?php if($doda->puedeEditarse()): ?>
                         <a href="<?php echo e(route('capturista.dodas.edit', $doda)); ?>" class="aduana-btn">Editar</a>

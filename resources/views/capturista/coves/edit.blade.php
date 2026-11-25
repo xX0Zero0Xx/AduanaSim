@@ -6,7 +6,6 @@
                     <span class="aduana-eyebrow aduana-eyebrow--muted">Edición</span>
                     <h3>COVE {{ $cove->folio }}</h3>
                 </div>
-                <a href="{{ route('capturista.coves.show', $cove) }}" class="aduana-btn aduana-btn--ghost">← Ver</a>
             </div>
             @include('capturista.partials.flash')
             <form method="POST" action="{{ route('capturista.coves.update', $cove) }}" class="aduana-form">
@@ -15,6 +14,7 @@
                 @include('capturista.coves._form')
                 <div class="aduana-form-actions">
                     <button type="submit" class="aduana-btn aduana-btn--primary">Guardar cambios</button>
+                    <a href="{{ route('dashboard', ['tab' => 'cove']) }}" class="aduana-btn aduana-btn--ghost inline-flex items-center">Cancelar</a>
                 </div>
             </form>
         </section>

@@ -5,7 +5,6 @@
             <h3>Panel de revisión y validación</h3>
             <p>Selecciona un departamento en cada apartado para filtrar documentos, usuarios o equipos.</p>
         </div>
-        <div class="aduana-home__stamp"><span>AS</span><small>REVISIÓN</small></div>
     </div>
 
     <?php $s = $agentStats ?? ['pendientes' => 0, 'validados' => 0, 'devueltos' => 0]; ?>
